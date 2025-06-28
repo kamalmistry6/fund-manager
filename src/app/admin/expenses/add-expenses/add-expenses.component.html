@@ -1,0 +1,71 @@
+<p>add-expenses works!</p>
+<div class="dialog-wrapper">
+    <div class="dialog-header">
+        <h3>
+            Add Expenses
+        </h3>
+        <div style="display: flex;align-items: center;gap: 10px;">
+            <button class="close-btn" type="submit" (click)="onSubmit()"><mat-icon svgIcon="save"></mat-icon>
+            </button>
+            <button class="close-btn" (click)="closeDialog()">
+                <mat-icon svgIcon="close"></mat-icon>
+            </button>
+        </div>
+    </div>
+    <div class="dialog-body">
+        <form [formGroup]="expensesForm" class="add-form">
+            <!-- name field -->
+            <mat-form-field appearance="outline" class="no-bottom mat-form-field">
+                <mat-label>Name</mat-label>
+                <input matInput formControlName="name" placeholder="Enter name" />
+                <mat-error *ngIf="expensesForm.get('name')?.hasError('required')">Please enter Name</mat-error>
+            </mat-form-field>
+            <!-- Description field -->
+            <mat-form-field appearance="outline" class="no-bottom mat-form-field">
+                <mat-label>Description</mat-label>
+                <input matInput formControlName="description" placeholder="Enter Description" />
+                <mat-error *ngIf="expensesForm.get('description')?.hasError('required')">Please enter
+                    Description</mat-error>
+            </mat-form-field>
+            <!-- date field -->
+            <mat-form-field appearance="outline" class="no-bottom mat-form-field">
+                <mat-label>Expense Date</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="expense_date" placeholder="YYYY-MM-DD" />
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error *ngIf="expensesForm.get('expense_date')?.hasError('required')">
+                    Please enter Expense Date
+                </mat-error>
+            </mat-form-field>
+
+            <!-- payment field -->
+            <mat-form-field appearance="outline" class="no-bottom mat-form-field">
+                <mat-label>Payment Method</mat-label>
+                <mat-select formControlName="payment_method">
+                    <mat-option *ngFor="let payment of paymentMethodOptions" [value]="payment">
+                        {{ payment }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="expensesForm.get('payment_method')?.hasError('required')">Please select Payment
+                    Method</mat-error>
+            </mat-form-field>
+            <!-- status field -->
+            <mat-form-field appearance="outline" class="no-bottom mat-form-field">
+                <mat-label>Status</mat-label>
+                <mat-select formControlName="status">
+                    <mat-option *ngFor="let statusType of statusTypeOptions" [value]="statusType">
+                        {{ statusType }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="expensesForm.get('status')?.hasError('required')">status is required</mat-error>
+            </mat-form-field>
+            <!-- amount field -->
+            <mat-form-field appearance="outline" class="no-bottom mat-form-field">
+                <mat-label>Amount</mat-label>
+                <input matInput formControlName="amount" placeholder="Enter Amount" />
+                <mat-error *ngIf="expensesForm.get('amount')?.hasError('required')">Please enter Amount</mat-error>
+            </mat-form-field>
+
+        </form>
+    </div>
+</div>

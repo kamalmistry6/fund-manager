@@ -1,0 +1,66 @@
+<div class="main-wrapper">
+    <div class="expenses-header">
+        <form class="expenses-form" [formGroup]="userExpensesForm" (ngSubmit)="onSubmit()">
+            <div class="form-wrapper">
+                <div class="form-group">
+                    <!-- <label>Description</label> -->
+                    <input type="text" formControlName="title" placeholder="Enter Desc" />
+
+                </div>
+                <!-- amount -->
+                <div class="form-group">
+                    <!-- <label>Amount</label> -->
+                    <input type="number" formControlName="amount" placeholder="Enter amount" />
+
+                </div>
+            </div>
+            <h4>Available Balance: {{totalAmount - userTotalAmount}}</h4>
+            <button class="mat-raised-button" type="submit">
+                Add Expenses
+            </button>
+        </form>
+    </div>
+    <div class="table">
+        <div style="overflow:auto;">
+            <table mat-table [dataSource]="userExpenseDataSource">
+                <ng-container matColumnDef="sr_no">
+                    <th mat-header-cell *matHeaderCellDef> Sr. No </th>
+                    <td mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+                </ng-container>
+                <ng-container matColumnDef="title">
+                    <th mat-header-cell *matHeaderCellDef>Description</th>
+                    <td mat-cell *matCellDef="let element">{{element.title}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="spent_on">
+                    <th mat-header-cell *matHeaderCellDef>Date</th>
+                    <td mat-cell *matCellDef="let element">{{element.spent_on| date:
+                        'dd-MMM-yy'}}</td>
+                </ng-container>
+                <ng-container matColumnDef="amount">
+                    <th mat-header-cell *matHeaderCellDef>Amount</th>
+                    <td mat-cell *matCellDef="let element">{{element.amount}}</td>
+                </ng-container>
+                <!-- <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef> Actions </th>
+                    <td mat-cell *matCellDef="let element">
+                        <button class="delete-button" (click)="deleteFund(element.id)">
+                            <mat-icon svgIcon="delete"></mat-icon> </button>
+                    </td>
+                </ng-container> -->
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" [attr.colspan]="displayedColumns.length"
+                        style="text-align:center;padding: 1rem;font-size: 18px;">
+                        No record found !
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <mat-paginator [pageSizeOptions]="[10, 20, 30]" [showFirstLastButtons]="false"></mat-paginator>
+
+    </div>
+</div>

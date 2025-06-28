@@ -1,0 +1,25 @@
+<div class="dashboard-container">
+    <div class="stats-wrapper">
+        <div class="stats-card">
+            <div class="stats-logo"><i class="fa-solid fa-circle-check"></i></div>
+            <a class="stats-txt">Total Expenses</a>
+            <h2 class="stats-value">{{ stats?.totalExpenses }}</h2>
+        </div>
+        <div class="stats-card">
+            <div class="stats-logo"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+            <a class="stats-txt">Total Amount</a>
+            <h2 class="stats-value">{{ stats?.amountStats?.totalAmount }}</h2>
+        </div>
+        <div class="stats-card">
+            <div class="stats-logo"><i class="fa-solid fa-circle-check"></i></div>
+            <a class="stats-txt">Total Receipt</a>
+            <h2 class="stats-value">{{ stats?.totalReceipt }}</h2>
+        </div>
+        <div class="stats-card">
+            <div class="stats-logo"><i class="fa-solid fa-hourglass"></i></div>
+            <a class="stats-txt">Pending Expenses</a>
+            <h2 class="stats-value">{{ stats?.statusStats?.pending }}</h2>
+        </div>
+
+    </div>
+</div>

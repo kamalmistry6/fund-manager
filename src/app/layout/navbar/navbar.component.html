@@ -1,0 +1,54 @@
+<nav class="navbar">
+    <div class="navbar-logo">
+        <img src="../../../assets/image/logo.png" alt="Logo" />
+        <a href="#" class="navbar-title">वृंदावन पार्क मित्र मंडळ</a>
+    </div>
+
+    <ul class="navbar-links">
+        <li *ngIf="permissionService.isAdmin()">
+            <a routerLink="/admin/Dashboard" routerLinkActive="active-link">Dashboard</a>
+        </li>
+        <li *ngIf="permissionService.isAdmin()">
+            <a routerLink="/admin/fund-list" routerLinkActive="active-link">Receipt</a>
+        </li>
+        <li *ngIf="permissionService.isAdmin()">
+            <a routerLink="/admin/fund-expenses" routerLinkActive="active-link">Expenses</a>
+        </li>
+        <li *ngIf="permissionService.isUser()">
+            <a routerLink="/user/user-expenses" routerLinkActive="active-link">Expenses</a>
+        </li>
+        <li *ngIf="permissionService.isAdmin()">
+            <a routerLink="/admin/allot-expenses" routerLinkActive="active-link">Allot </a>
+        </li>
+    </ul>
+
+    <button class="navbar-menu-button" (click)="togglePopup()">
+        <i class="fa-solid fa-bars-staggered"></i>
+    </button>
+</nav>
+
+<!-- Mobile Popup Menu -->
+<div class="navbar-popup-overlay" *ngIf="isPopupOpen">
+    <div class="navbar-popup">
+        <button class="navbar-popup-close" (click)="togglePopup()">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <ul class="navbar-popup-links">
+            <li *ngIf="permissionService.isAdmin()">
+                <a routerLink="/admin/Dashboard" (click)="togglePopup()" routerLinkActive="active-link">Dashboard</a>
+            </li>
+            <li *ngIf="permissionService.isAdmin()">
+                <a routerLink="/admin/fund-list" (click)="togglePopup()" routerLinkActive="active-link">Receipt</a>
+            </li>
+            <li *ngIf="permissionService.isAdmin()">
+                <a routerLink="/admin/fund-expenses" (click)="togglePopup()" routerLinkActive="active-link">Expenses</a>
+            </li>
+            <li *ngIf="permissionService.isUser()">
+                <a routerLink="/user/user-expenses" (click)="togglePopup()" routerLinkActive="active-link">Expenses</a>
+            </li>
+            <li *ngIf="permissionService.isAdmin()">
+                <a routerLink="/admin/allot-expenses" (click)="togglePopup()" routerLinkActive="active-link">Allot </a>
+            </li>
+        </ul>
+    </div>
+</div>

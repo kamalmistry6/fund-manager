@@ -1,0 +1,184 @@
+<div class="fund-wrapper">
+
+    <div class="fund-body">
+        <div class="fund-list">
+            <h2 class="form-header">Add New Receipt</h2>
+            <div style="display: flex; align-items: center;gap: 1rem;">
+                <div>
+                    <button class="add-master button" (click)="toggleMasterBulding()">
+                        <mat-icon svgIcon="building"></mat-icon>
+                    </button>
+                </div>
+                <div class="master-form" *ngIf="showMasterBulding">
+                    <mat-form-field appearance="outline" style="margin-bottom: -1.25rem;">
+                        <mat-label>Building</mat-label>
+                        <mat-select [formControl]="buildingControl" (selectionChange)="onBuildingSelected()">
+                            <mat-option *ngFor="let flatType of flatTypeOptions" [value]="flatType">
+                                {{ flatType }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <form class="fund-form" [formGroup]="fundForm" (ngSubmit)="onSubmit()">
+                <div class="form-group">
+                    <label>Receipt No</label>
+                    <input type="number" formControlName="receipt_no" placeholder="Enter receipt no" />
+                    <div *ngIf="fundForm.get('receipt_no')?.invalid && fundForm.get('receipt_no')?.touched"
+                        class="error">
+                        Please enter Receipt No.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" formControlName="name" placeholder="Enter name" />
+                    <div *ngIf="fundForm.get('name')?.invalid && fundForm.get('name')?.touched" class="error">
+                        Please enter Name.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Bulding</label>
+                    <input type="text" formControlName="bulding" placeholder="Enter bulding" readonly />
+                    <div *ngIf="fundForm.get('bulding')?.invalid && fundForm.get('bulding')?.touched" class="error">
+                        Please enter Bulding.
+                    </div>
+                </div>
+                <!-- year -->
+                <div class="form-group">
+                    <label>Year</label>
+                    <input type="text" formControlName="year" placeholder="Enter Year" />
+                    <div *ngIf="fundForm.get('year')?.invalid && fundForm.get('year')?.touched" class="error">
+                        Please enter year.
+                    </div>
+                </div>
+                <!-- date -->
+                <div class="form-group ">
+                    <label for="date">Date</label>
+                    <input type="date" formControlName="date" placeholder="Select your date">
+                </div>
+                <!-- mode of payment -->
+                <div class="form-group">
+                    <label>Mode of Payment</label>
+                    <div class="radio-group">
+                        <label class="radio-label"><input type="radio" value="cash"
+                                formControlName="mode_of_payment" />- Cash </label>
+                        <label class="radio-label"><input type="radio" value="online"
+                                formControlName="mode_of_payment" />- Online</label>
+                        <label class="radio-label"><input type="radio" value="cheque"
+                                formControlName="mode_of_payment" />- Cheque</label>
+                    </div>
+                </div>
+                <!-- amount -->
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input type="number" formControlName="amount" placeholder="Enter amount" />
+                    <div *ngIf="fundForm.get('amount')?.invalid && fundForm.get('amount')?.touched" class="error">
+                        Please enter Valid amount.
+                    </div>
+                </div>
+
+                <button class="mat-raised-button" type="submit">
+                    Add Fund
+                </button>
+            </form>
+        </div>
+        <div class="fund-table">
+            <div class="fund-filter">
+
+                <form class="filter-form" [formGroup]="filterForm" (ngSubmit)="getFunds()">
+                    <div class="filter-group">
+                        <input type="number" formControlName="receipt_no" placeholder="Receipt No" />
+                    </div>
+
+                    <div class="filter-group">
+                        <input type="text" formControlName="name" placeholder="Name" />
+                    </div>
+
+                    <div class="filter-group">
+                        <input type="text" formControlName="mode_of_payment" placeholder="Mode of Payment" />
+                    </div>
+
+                    <!-- date -->
+                    <div class="filter-group ">
+                        <input type="date" formControlName="date" placeholder="Date">
+                    </div>
+                    <!-- mode of payment -->
+                    <!-- <div class="filter-group">
+                        <label>Mode of Payment</label>
+                        <div class="radio-group">
+                            <label class="radio-label"><input type="radio" value="cash"
+                                    formControlName="mode_of_payment" />- Cash
+                            </label>
+                            <label class="radio-label"><input type="radio" value="online"
+                                    formControlName="mode_of_payment" />-
+                                Online</label>
+                            <label class="radio-label"><input type="radio" value="cheque"
+                                    formControlName="mode_of_payment" />-
+                                Cheque</label>
+                        </div>
+                    </div> -->
+                </form>
+                <button class="mat-raised-button" type="button" (click)="resetFilters()">
+                    Reset
+                </button>
+            </div>
+            <!-- <div class="table-wrapper"> -->
+            <div style="overflow:auto;">
+                <table mat-table [dataSource]="fundDataSource">
+                    <ng-container matColumnDef="sr_no">
+                        <th mat-header-cell *matHeaderCellDef> Sr. No </th>
+                        <td mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="receipt_no">
+                        <th mat-header-cell *matHeaderCellDef>Receipt No</th>
+                        <td mat-cell *matCellDef="let element">{{element.receipt_no}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="name">
+                        <th mat-header-cell *matHeaderCellDef>Name</th>
+                        <td mat-cell *matCellDef="let element">{{element.name}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="bulding">
+                        <th mat-header-cell *matHeaderCellDef>Bulding</th>
+                        <td mat-cell *matCellDef="let element">{{element.bulding}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="mode_of_payment">
+                        <th mat-header-cell *matHeaderCellDef>Payment Mode</th>
+                        <td mat-cell *matCellDef="let element">{{element.mode_of_payment}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="date">
+                        <th mat-header-cell *matHeaderCellDef>Date</th>
+                        <td mat-cell *matCellDef="let element">{{element.date| date:
+                            'dd-MMM-yy'}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="amount">
+                        <th mat-header-cell *matHeaderCellDef>Amount</th>
+                        <td mat-cell *matCellDef="let element">{{element.amount}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef> Actions </th>
+                        <td mat-cell *matCellDef="let element">
+                            <button class="delete-button" (click)="deleteFund(element.id)">
+                                <mat-icon svgIcon="delete"></mat-icon> </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell" [attr.colspan]="displayedColumns.length"
+                            style="text-align:center;padding: 1rem;font-size: 18px;">
+                            No record found !
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <mat-paginator [pageSizeOptions]="[10, 20, 30]" [showFirstLastButtons]="false"></mat-paginator>
+            <!-- </div> -->
+        </div>
+    </div>
+</div>

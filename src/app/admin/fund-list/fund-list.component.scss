@@ -1,0 +1,163 @@
+.master-form {
+  background: none;
+  padding: 1rem;
+  border-radius: 5px;
+  width: 250px;
+  text-align: center;
+  animation: popUp 0.4s ease forwards;
+  // transform: scale(0.7);
+  opacity: 0;
+}
+@keyframes popUp {
+  to {
+    opacity: 1;
+  }
+}
+
+.fund-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+.fund-body {
+  display: flex;
+  gap: 1rem;
+  // padding: 1rem;
+  .fund-list {
+    flex: 1;
+    max-width: 30%;
+    background: #f4fcff;
+    border: 1px solid #c4d9ff;
+    border-radius: 5px;
+
+    .form-header {
+      text-align: center;
+      color: #74777f;
+      background: #c4d9ff;
+      font-weight: 600;
+      border-bottom: 1px solid #74777f;
+      margin-bottom: 1rem;
+      padding: 0.8rem;
+    }
+    .add-master {
+      margin-left: 1rem;
+      cursor: pointer;
+      border: 2px solid #c4d9ff;
+      padding: 0.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  .fund-table {
+    flex: 2;
+    width: 100%;
+
+    .fund-filter {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid #c4d9ff;
+      border-radius: 5px;
+      padding: 1rem;
+      margin-bottom: 10px;
+      gap: 1rem;
+
+      @media (max-width: 430px) {
+        flex-direction: column;
+      }
+
+      .filter-form {
+        display: flex;
+        flex-wrap: wrap;
+        // padding: 13px 0px;
+        gap: 1rem;
+
+        .filter-group {
+          @media (max-width: 430px) {
+            flex: 0 0 calc(50% - 0.5rem);
+          }
+        }
+
+        & input,
+        & select {
+          height: 30px;
+          padding: 10px;
+          width: 100%;
+          font-size: 15px;
+          outline: none;
+          background: none;
+          border-radius: 3px;
+          border: 1px solid #bfbfbf;
+        }
+        & input:focus {
+          background: #fff;
+          border-color: #c4d9ff;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 1024px) {
+    flex-direction: column;
+
+    .fund-list,
+    .fund-table {
+      max-width: 100%;
+    }
+  }
+}
+.fund-form {
+  padding: 1rem;
+  .form-group {
+    margin-bottom: 15px;
+    position: relative;
+
+    .error {
+      padding-top: 2px;
+      padding-left: 15px;
+      font-size: 12px;
+      color: red;
+    }
+  }
+  label {
+    display: block;
+    color: #4f4f4f;
+    font-size: 18px;
+    margin-bottom: 2px;
+  }
+  & input {
+    // height: 45px;
+    padding: 10px;
+    width: 100%;
+    font-size: 15px;
+    outline: none;
+    background: none;
+    border-radius: 3px;
+    border: 1px solid #bfbfbf;
+  }
+  & input:focus {
+    background: #fff;
+    border-color: #c4d9ff;
+  }
+}
+.radio-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 0.5rem;
+  .radio-label {
+    display: flex;
+    align-items: center;
+    // gap: 10px;
+
+    input[type="radio"] {
+      width: 20px;
+      height: 20px;
+      margin-right: 4px;
+      border-radius: 0px;
+      cursor: pointer;
+    }
+  }
+}

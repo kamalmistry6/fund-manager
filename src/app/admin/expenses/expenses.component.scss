@@ -1,0 +1,63 @@
+// @import "../../../assets/scss/variables";
+.filter-header {
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+.filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  @media (max-width: 768px) {
+    .mat-form-field {
+      flex: 0 0 calc(50% - 0.5rem);
+    }
+  }
+}
+
+.custom-backdrop {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 1.2rem;
+  color: red;
+  transition: color 0.3s ease-in-out;
+}
+
+.edit-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 1.2rem;
+  color: #0066ff;
+  transition: color 0.3s ease-in-out;
+}
+
+.delete-button i {
+  pointer-events: none;
+}
+.status-paid {
+  color: #1fa855;
+  font-weight: 500;
+}
+
+.status-pending {
+  color: #e52020;
+  font-weight: 500;
+}
+
+.no-bottom {
+  margin-bottom: -1.2rem;
+}
+
+::ng-deep .mat-mdc-dialog-container {
+  border-radius: 0 !important;
+}
