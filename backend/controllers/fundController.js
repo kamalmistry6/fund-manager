@@ -1,4 +1,5 @@
 const fundModel = require("../models/fundModel");
+const ExcelJS = require("exceljs");
 
 exports.getFunds = async (req, res) => {
   try {
@@ -67,5 +68,50 @@ exports.deleteFund = async (req, res) => {
   } catch (err) {
     console.error("Error deleting fund:", err);
     res.status(500).json({ message: err.message });
+  }
+};
+
+exports.downloadFundsExcel = async (req, res) => {
+  try {
+    // ✅ Fetch all fund records (no filters)
+    const funds = await fundModel.getAllFunds();
+
+    // Create workbook & worksheet
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Fund Records");
+
+    // Define columns
+    worksheet.columns = [
+      { header: "Receipt No", key: "receipt_no", width: 15 },
+      { header: "Name", key: "name", width: 20 },
+      { header: "Building", key: "bulding", width: 20 },
+      { header: "Mode of Payment", key: "mode_of_payment", width: 15 },
+      { header: "Place", key: "place", width: 15 },
+      { header: "Year", key: "year", width: 8 },
+      { header: "Date", key: "date", width: 15 },
+      { header: "Amount", key: "amount", width: 10 },
+    ];
+
+    // Add data rows
+    funds.forEach((fund) => {
+      worksheet.addRow(fund);
+    });
+
+    // Set headers
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=fund-records-${Date.now()}.xlsx`
+    );
+
+    // Write workbook to response stream
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    console.error("Error generating Excel:", err);
+    res.status(500).json({ message: "Failed to generate Excel file" });
   }
 };

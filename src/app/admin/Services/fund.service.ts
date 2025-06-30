@@ -32,6 +32,11 @@ export class FundService {
 
     return this.http.get(`${this.baseUrl}/funds`, { params });
   }
+  downloadExcel(): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/funds/download-excel`, {
+      responseType: 'blob', // <-- important to get file as blob
+    });
+  }
 
   addFund(fundData: fund): Observable<any> {
     return this.http.post(`${this.baseUrl}/funds`, fundData);

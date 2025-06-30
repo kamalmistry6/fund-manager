@@ -63,5 +63,8 @@ exports.deleteFund = async (id) => {
   return result;
 };
 
-// allot api model
-
+exports.getAllFunds = async () => {
+  const query = `SELECT * FROM fund_records ORDER BY date DESC`;
+  const [rows] = await db.execute(query);
+  return rows;
+};

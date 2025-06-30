@@ -74,7 +74,6 @@ export class FundListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getFunds();
-    console.log(this.generateReceiptNo());
 
     // filter call
     this.filterForm.valueChanges
@@ -84,28 +83,10 @@ export class FundListComponent implements OnInit {
       });
   }
 
-  generateReceiptNo(): void {
-    this.lastReceiptNo++;
-
-    const formattedNumber = this.lastReceiptNo.toString().padStart(3, '0');
-    console.log('formattedNumber', formattedNumber);
-
-    const receiptNo = `${formattedNumber}/${this.currentYear}`;
-    console.log('receiptNo', receiptNo);
-
-    // This line returns void, so no need to log it
-    this.fundForm.controls['receipt_no'].setValue(receiptNo);
-
-    // ✅ Correct way to confirm value
-    console.log(
-      'Updated Receipt No:',
-      this.fundForm.controls['receipt_no'].value
-    );
-  }
-
   toggleMasterBulding() {
     this.showMasterBulding = !this.showMasterBulding;
   }
+
   initializeForm(): void {
     const today = formatDate(new Date(), 'yyyy-MM-dd', 'en');
 
@@ -127,8 +108,8 @@ export class FundListComponent implements OnInit {
     this.filterForm = this.fb.group({
       receipt_no: [''],
       name: [''],
-      date: [''],
-      mode_of_payment: [''],
+      // date: [''],
+      // mode_of_payment: [''],
     });
   }
   resetFilters() {
@@ -141,7 +122,6 @@ export class FundListComponent implements OnInit {
   }
 
   syncBuildingSelection(): void {
-    // Check saved value in localStorage
     const savedBuilding = localStorage.getItem('selectedBuilding');
     if (savedBuilding) {
       this.buildingControl.setValue(savedBuilding);
@@ -163,12 +143,60 @@ export class FundListComponent implements OnInit {
         this.fundDataSource = new MatTableDataSource(data);
         this.fundDataSource.paginator = this.paginator;
         this.fundDataSource.data = data;
+        this.updateLastReceiptNo(data);
+        this.generateReceiptNo();
         this.cdr.detectChanges();
       },
       (error) => {
         console.error('Error fetching allotment data:', error);
       }
     );
+  }
+
+  downlaodExcel(): void {
+    this.fundService.downloadExcel().subscribe(
+      (response) => {
+        const blob = new Blob([response], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `fund-records-${Date.now()}.xlsx`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      (error) => {
+        console.error('Error downloading excel file:', error);
+      }
+    );
+  }
+
+  updateLastReceiptNo(funds: fund[]): void {
+    let maxReceiptNo = 0;
+
+    funds.forEach((fund) => {
+      const receiptStr = fund.receipt_no.split('/')[0];
+
+      const receiptNumber = parseInt(receiptStr, 10);
+      if (!isNaN(receiptNumber) && receiptNumber > maxReceiptNo) {
+        maxReceiptNo = receiptNumber;
+      }
+    });
+
+    this.lastReceiptNo = maxReceiptNo;
+    console.log('Latest Receipt No found:', this.lastReceiptNo);
+  }
+
+  generateReceiptNo(): void {
+    this.lastReceiptNo++;
+
+    const formattedNumber = this.lastReceiptNo.toString().padStart(3, '0');
+    const receiptNo = `${formattedNumber}/${this.currentYear}`;
+
+    this.fundForm.controls['receipt_no'].setValue(receiptNo);
+
+    console.log('Receipt No set:', receiptNo);
   }
 
   onSubmit() {

@@ -24,7 +24,7 @@
             <form class="fund-form" [formGroup]="fundForm" (ngSubmit)="onSubmit()">
                 <div class="form-group">
                     <label>Receipt No</label>
-                    <input type="number" formControlName="receipt_no" placeholder="Enter receipt no" />
+                    <input type="text" formControlName="receipt_no" placeholder="Enter receipt no" readonly />
                     <div *ngIf="fundForm.get('receipt_no')?.invalid && fundForm.get('receipt_no')?.touched"
                         class="error">
                         Please enter Receipt No.
@@ -87,43 +87,32 @@
         </div>
         <div class="fund-table">
             <div class="fund-filter">
-
                 <form class="filter-form" [formGroup]="filterForm" (ngSubmit)="getFunds()">
+                    <h3>Filter:</h3>
                     <div class="filter-group">
-                        <input type="number" formControlName="receipt_no" placeholder="Receipt No" />
+                        <input type="text" formControlName="receipt_no" placeholder="Receipt No" />
                     </div>
 
                     <div class="filter-group">
                         <input type="text" formControlName="name" placeholder="Name" />
                     </div>
-
+                    <!-- 
                     <div class="filter-group">
                         <input type="text" formControlName="mode_of_payment" placeholder="Mode of Payment" />
                     </div>
 
-                    <!-- date -->
                     <div class="filter-group ">
                         <input type="date" formControlName="date" placeholder="Date">
-                    </div>
-                    <!-- mode of payment -->
-                    <!-- <div class="filter-group">
-                        <label>Mode of Payment</label>
-                        <div class="radio-group">
-                            <label class="radio-label"><input type="radio" value="cash"
-                                    formControlName="mode_of_payment" />- Cash
-                            </label>
-                            <label class="radio-label"><input type="radio" value="online"
-                                    formControlName="mode_of_payment" />-
-                                Online</label>
-                            <label class="radio-label"><input type="radio" value="cheque"
-                                    formControlName="mode_of_payment" />-
-                                Cheque</label>
-                        </div>
                     </div> -->
                 </form>
-                <button class="mat-raised-button" type="button" (click)="resetFilters()">
-                    Reset
-                </button>
+                <div class="filter-btn">
+                    <button class="excel-btn" aria-label="menu icon" (click)="downlaodExcel()">
+                        <img src="../../../assets/image/excel.svg" alt="" style="width: 35px; height: 35px" />
+                    </button>
+                    <button class="mat-raised-button" type="button" (click)="resetFilters()">
+                        Reset
+                    </button>
+                </div>
             </div>
             <!-- <div class="table-wrapper"> -->
             <div style="overflow:auto;">
