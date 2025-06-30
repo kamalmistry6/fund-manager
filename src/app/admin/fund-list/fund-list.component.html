@@ -49,7 +49,7 @@
                 <!-- year -->
                 <div class="form-group">
                     <label>Year</label>
-                    <input type="text" formControlName="year" placeholder="Enter Year" />
+                    <input type="text" formControlName="year" placeholder="Enter Year" readonly />
                     <div *ngIf="fundForm.get('year')?.invalid && fundForm.get('year')?.touched" class="error">
                         Please enter year.
                     </div>

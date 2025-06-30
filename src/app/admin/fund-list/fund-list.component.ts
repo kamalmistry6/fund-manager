@@ -21,10 +21,8 @@ import { fund } from '../models/funds';
 })
 export class FundListComponent implements OnInit {
   showMasterBulding = false;
-
-  toggleMasterBulding() {
-    this.showMasterBulding = !this.showMasterBulding;
-  }
+  currentYear = '2526';
+  lastReceiptNo: number = 0;
 
   buildingControl = new FormControl('');
   flatTypeOptions: string[] = [
@@ -76,6 +74,7 @@ export class FundListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getFunds();
+    console.log(this.generateReceiptNo());
 
     // filter call
     this.filterForm.valueChanges
@@ -85,6 +84,28 @@ export class FundListComponent implements OnInit {
       });
   }
 
+  generateReceiptNo(): void {
+    this.lastReceiptNo++;
+
+    const formattedNumber = this.lastReceiptNo.toString().padStart(3, '0');
+    console.log('formattedNumber', formattedNumber);
+
+    const receiptNo = `${formattedNumber}/${this.currentYear}`;
+    console.log('receiptNo', receiptNo);
+
+    // This line returns void, so no need to log it
+    this.fundForm.controls['receipt_no'].setValue(receiptNo);
+
+    // ✅ Correct way to confirm value
+    console.log(
+      'Updated Receipt No:',
+      this.fundForm.controls['receipt_no'].value
+    );
+  }
+
+  toggleMasterBulding() {
+    this.showMasterBulding = !this.showMasterBulding;
+  }
   initializeForm(): void {
     const today = formatDate(new Date(), 'yyyy-MM-dd', 'en');
 
