@@ -7,6 +7,7 @@ const normalizeExpensePayload = (payload) => ({
   paymentMethod: payload.payment_method || payload.paymentMethod || null,
   expenseDate: payload.expense_date || payload.expenseDate || null,
   status: payload.status || null,
+  billPhoto: payload.bill_photo || null,
 });
 // Get All Expenses
 exports.getExpenses = async (req, res) => {
@@ -34,6 +35,11 @@ exports.addExpense = async (req, res) => {
   if (!expense.name || !expense.amount) {
     return res.status(400).json({ message: "Name and Amount are required" });
   }
+
+  const billPhotoPath = req.file ? req.file.filename : null;
+
+  expense.billPhoto = billPhotoPath;
+
 
   try {
     await expenseModel.addExpense(expense);

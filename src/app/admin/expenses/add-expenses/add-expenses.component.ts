@@ -14,7 +14,8 @@ export class AddExpensesComponent {
   @Output() dataChanged = new EventEmitter<void>();
   expensesForm!: FormGroup;
   statusTypeOptions: string[] = ['Paid', 'Pending'];
-  paymentMethodOptions: string[] = ['Cash', 'Card', 'Online'];
+  paymentMethodOptions: string[] = ['Cash', 'Online', 'Cheque'];
+  selectedFile: File | null = null;
 
   constructor(
     private dialogRef: MatDialogRef<AddExpensesComponent>,
@@ -39,6 +40,13 @@ export class AddExpensesComponent {
     });
   }
 
+  onFileSelected(event: any): void {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+    }
+  }
+
   onSubmit(): void {
     if (this.expensesForm.invalid) {
       alert('Please fill all required fields correctly.');
@@ -55,9 +63,24 @@ export class AddExpensesComponent {
   }
 
   addExpense(expensesData: any): void {
-    this.expensesService.addExpense(expensesData).subscribe(
+    const formData = new FormData();
+
+    // Append form fields to FormData
+    formData.append('name', expensesData.name);
+    formData.append('description', expensesData.description);
+    formData.append('expense_date', expensesData.expense_date);
+    formData.append('payment_method', expensesData.payment_method);
+    formData.append('status', expensesData.status);
+    formData.append('amount', expensesData.amount);
+
+    // Append file if selected
+    if (this.selectedFile) {
+      formData.append('bill_photo', this.selectedFile);
+    }
+
+    this.expensesService.addExpense(formData).subscribe(
       () => {
-        this.dataChanged.emit(); // ✅ Emit event when added
+        this.dataChanged.emit(); // ✅ Notify parent
         this.dialogRef.close(true);
       },
       (error) => {

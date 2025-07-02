@@ -33,8 +33,8 @@ exports.getExpenses = async (filters) => {
 // Add Expense
 exports.addExpense = async (expense) => {
   const sql = `
-    INSERT INTO expense (name, description, expense_date, payment_method, status, amount)
-    VALUES (?, ?, ?, ?, ?, ?)`;
+    INSERT INTO expense (name, description, expense_date, payment_method, status, amount, bill_photo)
+    VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
   const values = [
     expense.name,
@@ -43,6 +43,7 @@ exports.addExpense = async (expense) => {
     expense.paymentMethod || expense.payment_method,
     expense.status,
     expense.amount,
+    expense.billPhoto || expense.bill_photo,
   ];
 
   return db.execute(sql, values);
