@@ -20,9 +20,10 @@ import { fund } from '../models/funds';
   styleUrl: './fund-list.component.scss',
 })
 export class FundListComponent implements OnInit {
-  showMasterBulding = false;
   currentYear = '2526';
-  lastReceiptNo: number = 0;
+  lastReceiptNo = 0;
+  showMasterBulding = false;
+  isSubmitting = false;
 
   buildingControl = new FormControl('');
   flatTypeOptions: string[] = [
@@ -50,15 +51,16 @@ export class FundListComponent implements OnInit {
     'bulding',
     'mode_of_payment',
     'date',
+    'marked_as_pay_later',
     'amount',
-    'action',
+    // 'action',
   ];
+
   fundDataSource = new MatTableDataSource<fund>();
 
   fundForm!: FormGroup;
   filterForm!: FormGroup;
 
-  isSubmitting = false;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
@@ -74,24 +76,18 @@ export class FundListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getFunds();
+    this.handlePayLaterChanges();
 
-    // filter call
     this.filterForm.valueChanges
       .pipe(debounceTime(400), distinctUntilChanged())
-      .subscribe(() => {
-        this.getFunds();
-      });
-  }
-
-  toggleMasterBulding() {
-    this.showMasterBulding = !this.showMasterBulding;
+      .subscribe(() => this.getFunds());
   }
 
   initializeForm(): void {
     const today = formatDate(new Date(), 'yyyy-MM-dd', 'en');
 
     this.fundForm = this.fb.group({
-      receipt_no: ['', Validators.required],
+      receipt_no: [''],
       name: ['', Validators.required],
       bulding: ['', Validators.required],
       mode_of_payment: ['cash', Validators.required],
@@ -101,6 +97,7 @@ export class FundListComponent implements OnInit {
         '',
         [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)],
       ],
+      marked_as_pay_later: ['paid'],
     });
   }
 
@@ -108,17 +105,46 @@ export class FundListComponent implements OnInit {
     this.filterForm = this.fb.group({
       receipt_no: [''],
       name: [''],
-      // date: [''],
-      // mode_of_payment: [''],
+      date: [''],
+      mode_of_payment: [''],
     });
   }
-  resetFilters() {
-    this.filterForm.reset();
-    this.getFunds();
-  }
 
-  onBuildingSelected(): void {
-    this.toggleMasterBulding();
+  handlePayLaterChanges(): void {
+    const payLaterCtrl = this.fundForm.get('marked_as_pay_later');
+    const receiptCtrl = this.fundForm.get('receipt_no');
+    const paymentCtrl = this.fundForm.get('mode_of_payment');
+    const amountCtrl = this.fundForm.get('amount');
+
+    if (!payLaterCtrl) return;
+
+    payLaterCtrl.valueChanges.subscribe((status) => {
+      if (status === 'pending') {
+        receiptCtrl?.setValue('');
+        receiptCtrl?.clearValidators();
+        paymentCtrl?.clearValidators();
+        amountCtrl?.clearValidators();
+
+        paymentCtrl?.disable();
+        amountCtrl?.disable();
+      } else {
+        this.generateReceiptNo();
+
+        receiptCtrl?.setValidators(Validators.required);
+        paymentCtrl?.setValidators(Validators.required);
+        amountCtrl?.setValidators([
+          Validators.required,
+          Validators.pattern(/^\d+(\.\d{1,2})?$/),
+        ]);
+
+        paymentCtrl?.enable();
+        amountCtrl?.enable();
+      }
+
+      receiptCtrl?.updateValueAndValidity();
+      paymentCtrl?.updateValueAndValidity();
+      amountCtrl?.updateValueAndValidity();
+    });
   }
 
   syncBuildingSelection(): void {
@@ -128,34 +154,110 @@ export class FundListComponent implements OnInit {
       this.fundForm.patchValue({ bulding: savedBuilding });
     }
 
-    // Subscribe to changes and update form + localStorage
-    this.buildingControl.valueChanges.subscribe((selectedBuilding) => {
-      this.fundForm.patchValue({ bulding: selectedBuilding });
-      localStorage.setItem('selectedBuilding', selectedBuilding || '');
+    this.buildingControl.valueChanges.subscribe((selected) => {
+      this.fundForm.patchValue({ bulding: selected });
+      localStorage.setItem('selectedBuilding', selected || '');
     });
   }
 
   getFunds(): void {
     const filters = this.filterForm.value;
 
-    this.fundService.getFunds(filters).subscribe(
-      (data: fund[]) => {
+    this.fundService.getFunds(filters).subscribe({
+      next: (data: fund[]) => {
         this.fundDataSource = new MatTableDataSource(data);
         this.fundDataSource.paginator = this.paginator;
         this.fundDataSource.data = data;
         this.updateLastReceiptNo(data);
-        this.generateReceiptNo();
+
+        if (this.fundForm.get('marked_as_pay_later')?.value === 'paid') {
+          this.generateReceiptNo();
+        }
+
         this.cdr.detectChanges();
       },
-      (error) => {
-        console.error('Error fetching allotment data:', error);
-      }
-    );
+      error: (err) => console.error('Error fetching funds:', err),
+    });
   }
 
-  downlaodExcel(): void {
-    this.fundService.downloadExcel().subscribe(
-      (response) => {
+  updateLastReceiptNo(funds: fund[]): void {
+    let maxReceiptNo = 0;
+
+    funds.forEach((fund) => {
+      if (fund.marked_as_pay_later !== 'pending' && fund.receipt_no) {
+        const [receiptStr] = fund.receipt_no.split('/');
+        const num = parseInt(receiptStr, 10);
+        if (!isNaN(num) && num > maxReceiptNo) maxReceiptNo = num;
+      }
+    });
+
+    this.lastReceiptNo = maxReceiptNo;
+  }
+
+  generateReceiptNo(): void {
+    this.lastReceiptNo++;
+    const formatted = this.lastReceiptNo.toString().padStart(3, '0');
+    const newReceipt = `${formatted}/${this.currentYear}`;
+    this.fundForm.get('receipt_no')?.setValue(newReceipt);
+  }
+
+  onSubmit(): void {
+    if (this.fundForm.invalid) {
+      this.toastService.showToast('Please fill all required fields.', 'error');
+      return;
+    }
+
+    this.isSubmitting = true;
+    const fundData = this.fundForm.value;
+
+    if (fundData.marked_as_pay_later === 'pending') {
+      fundData.mode_of_payment = null;
+      fundData.amount = null;
+      fundData.receipt_no = null;
+    }
+
+    this.fundService.addFund(fundData).subscribe({
+      next: () => {
+        this.toastService.showToast('Fund added successfully!', 'success');
+        this.getFunds();
+
+        const selectedBuilding = this.buildingControl.value;
+        this.fundForm.reset({
+          mode_of_payment: 'cash',
+          date: formatDate(new Date(), 'yyyy-MM-dd', 'en'),
+          year: '22',
+          bulding: selectedBuilding,
+          marked_as_pay_later: 'paid',
+        });
+
+        this.isSubmitting = false;
+      },
+      error: (err) => {
+        this.toastService.showToast('Error adding fund.', 'error');
+        console.error(err);
+        this.isSubmitting = false;
+      },
+    });
+  }
+
+  deleteFund(id: number): void {
+    if (confirm('Are you sure you want to delete this fund record?')) {
+      this.fundService.deleteFund(id).subscribe({
+        next: () => {
+          this.toastService.showToast('Fund deleted successfully.', 'success');
+          this.getFunds();
+        },
+        error: (err) => {
+          console.error(err);
+          this.toastService.showToast('Error deleting fund.', 'error');
+        },
+      });
+    }
+  }
+
+  downloadExcel(): void {
+    this.fundService.downloadExcel().subscribe({
+      next: (response) => {
         const blob = new Blob([response], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         });
@@ -166,92 +268,16 @@ export class FundListComponent implements OnInit {
         a.click();
         window.URL.revokeObjectURL(url);
       },
-      (error) => {
-        console.error('Error downloading excel file:', error);
-      }
-    );
-  }
-
-  updateLastReceiptNo(funds: fund[]): void {
-    let maxReceiptNo = 0;
-
-    funds.forEach((fund) => {
-      const receiptStr = fund.receipt_no.split('/')[0];
-
-      const receiptNumber = parseInt(receiptStr, 10);
-      if (!isNaN(receiptNumber) && receiptNumber > maxReceiptNo) {
-        maxReceiptNo = receiptNumber;
-      }
-    });
-
-    this.lastReceiptNo = maxReceiptNo;
-    console.log('Latest Receipt No found:', this.lastReceiptNo);
-  }
-
-  generateReceiptNo(): void {
-    this.lastReceiptNo++;
-
-    const formattedNumber = this.lastReceiptNo.toString().padStart(3, '0');
-    const receiptNo = `${formattedNumber}/${this.currentYear}`;
-
-    this.fundForm.controls['receipt_no'].setValue(receiptNo);
-
-    console.log('Receipt No set:', receiptNo);
-  }
-
-  onSubmit() {
-    if (this.fundForm.invalid) {
-      this.toastService.showToast(
-        'Please fill all required fields correctly.',
-        'error'
-      );
-      return;
-    }
-
-    this.isSubmitting = true;
-    const fundData = this.fundForm.value;
-
-    this.fundService.addFund(fundData).subscribe({
-      next: (response) => {
-        this.toastService.showToast(
-          'Fund Record added successfully!',
-          'success'
-        );
-        this.getFunds();
-
-        const currentBuilding = this.buildingControl.value;
-
-        this.fundForm.reset({
-          mode_of_payment: 'cash',
-          date: formatDate(new Date(), 'yyyy-MM-dd', 'en'),
-          year: '22',
-          bulding: currentBuilding,
-        });
-        this.isSubmitting = false;
-      },
-      error: (error) => {
-        this.toastService.showToast('Error adding fund.', 'error');
-        console.error('Fund add error:', error);
-        this.isSubmitting = false;
-      },
+      error: (err) => console.error('Error downloading Excel:', err),
     });
   }
 
-  deleteFund(id: number) {
-    if (confirm('Are you sure you want to delete this fund record?')) {
-      this.fundService.deleteFund(id).subscribe(
-        () => {
-          this.toastService.showToast(
-            'Fund record deleted successfully!',
-            'success'
-          );
-          this.getFunds(); // refresh the list after deletion
-        },
-        (error) => {
-          console.error('Error deleting fund:', error);
-          this.toastService.showToast('Error deleting fund record.', 'error');
-        }
-      );
-    }
+  toggleMasterBulding(): void {
+    this.showMasterBulding = !this.showMasterBulding;
+  }
+
+  resetFilters(): void {
+    this.filterForm.reset();
+    this.getFunds();
   }
 }

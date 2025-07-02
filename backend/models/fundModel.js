@@ -24,7 +24,7 @@ exports.getFunds = async (filters) => {
     params.push(filters.mode_of_payment);
   }
 
-  query += ` ORDER BY date DESC`;
+  query += ` ORDER BY id DESC`;
 
   const [rows] = await db.execute(query, params);
   return rows;
@@ -40,8 +40,8 @@ exports.checkReceiptExists = async (receipt_no) => {
 
 exports.addFund = async (fundData) => {
   const [result] = await db.execute(
-    `INSERT INTO fund_records (receipt_no, name, mode_of_payment, date, place, amount, year,bulding)
-     VALUES (?, ?, ?, ?, ?, ?, ?,?)`,
+    `INSERT INTO fund_records (receipt_no, name, mode_of_payment, date, place, amount, year,bulding, marked_as_pay_later)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       fundData.receipt_no,
       fundData.name,
@@ -51,6 +51,7 @@ exports.addFund = async (fundData) => {
       fundData.amount,
       fundData.year,
       fundData.bulding,
+      fundData.marked_as_pay_later || "paid",
     ]
   );
   return result;

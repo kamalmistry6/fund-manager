@@ -29,11 +29,11 @@ exports.getDashboardStats = async (req, res) => {
     // Amount Stats
     const [amountRows] = await db.execute(`
       SELECT 
-         (SELECT SUM(amount) FROM expense WHERE status = 'paid') as totalAmount,
-        SUM(CASE WHEN payment_method = 'online' THEN amount ELSE 0 END) as onlineAmount,
-        SUM(CASE WHEN payment_method = 'cash' THEN amount ELSE 0 END) as cashAmount,
-        SUM(CASE WHEN payment_method = 'cheque' THEN amount ELSE 0 END) as chequeAmount
-      FROM expense
+         (SELECT SUM(amount) FROM fund_records WHERE marked_as_pay_later = 'paid') as totalAmount,
+        SUM(CASE WHEN mode_of_payment = 'online' THEN amount ELSE 0 END) as onlineAmount,
+        SUM(CASE WHEN mode_of_payment = 'cash' THEN amount ELSE 0 END) as cashAmount,
+        SUM(CASE WHEN mode_of_payment = 'cheque' THEN amount ELSE 0 END) as chequeAmount
+      FROM fund_records
     `);
 
     // Total Expenses Count

@@ -15,8 +15,11 @@
       align-items: center;
       gap: 1rem;
 
+      @media (max-width: 768px) {
+        flex-direction: column;
+      }
+
       .form-group {
-        // margin-bottom: 15px;
         position: relative;
       }
       label {

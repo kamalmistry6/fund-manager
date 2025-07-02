@@ -12,7 +12,7 @@
                 <div class="master-form" *ngIf="showMasterBulding">
                     <mat-form-field appearance="outline" style="margin-bottom: -1.25rem;">
                         <mat-label>Building</mat-label>
-                        <mat-select [formControl]="buildingControl" (selectionChange)="onBuildingSelected()">
+                        <mat-select [formControl]="buildingControl" (selectionChange)="toggleMasterBulding()">
                             <mat-option *ngFor="let flatType of flatTypeOptions" [value]="flatType">
                                 {{ flatType }}
                             </mat-option>
@@ -71,6 +71,13 @@
                                 formControlName="mode_of_payment" />- Cheque</label>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label>Marked As Pay</label>
+                    <select formControlName="marked_as_pay_later" class="form-control">
+                        <option value="paid">Paid</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                </div>
                 <!-- amount -->
                 <div class="form-group">
                     <label>Amount</label>
@@ -106,7 +113,7 @@
                     </div> -->
                 </form>
                 <div class="filter-btn">
-                    <button class="excel-btn" aria-label="menu icon" (click)="downlaodExcel()">
+                    <button class="excel-btn" aria-label="menu icon" (click)="downloadExcel()">
                         <img src="../../../assets/image/excel.svg" alt="" style="width: 35px; height: 35px" />
                     </button>
                     <button class="mat-raised-button" type="button" (click)="resetFilters()">
@@ -124,7 +131,11 @@
 
                     <ng-container matColumnDef="receipt_no">
                         <th mat-header-cell *matHeaderCellDef>Receipt No</th>
-                        <td mat-cell *matCellDef="let element">{{element.receipt_no}}</td>
+                        <td mat-cell *matCellDef="let element" [ngClass]="{
+                            'text-color': element.marked_as_pay_later === 'pending' && (!element.receipt_no || element.receipt_no === '')
+                          }">{{ element.marked_as_pay_later === 'pending' &&
+                            (!element.receipt_no || element.receipt_no === '')
+                            ? 'Pay Later': element.receipt_no }}</td>
                     </ng-container>
                     <ng-container matColumnDef="name">
                         <th mat-header-cell *matHeaderCellDef>Name</th>
@@ -136,24 +147,34 @@
                     </ng-container>
                     <ng-container matColumnDef="mode_of_payment">
                         <th mat-header-cell *matHeaderCellDef>Payment Mode</th>
-                        <td mat-cell *matCellDef="let element">{{element.mode_of_payment}}</td>
+                        <td mat-cell *matCellDef="let element">{{element.mode_of_payment ?? '---'}}</td>
                     </ng-container>
                     <ng-container matColumnDef="date">
                         <th mat-header-cell *matHeaderCellDef>Date</th>
                         <td mat-cell *matCellDef="let element">{{element.date| date:
                             'dd-MMM-yy'}}</td>
                     </ng-container>
+                    <ng-container matColumnDef="marked_as_pay_later">
+                        <th mat-header-cell *matHeaderCellDef>Status</th>
+                        <td mat-cell *matCellDef="let element"
+                            [ngClass]="{'text-color': element.marked_as_pay_later === 'pending' }">
+                            {{element.marked_as_pay_later}}</td>
+                    </ng-container>
                     <ng-container matColumnDef="amount">
                         <th mat-header-cell *matHeaderCellDef>Amount</th>
-                        <td mat-cell *matCellDef="let element">{{element.amount}}</td>
+                        <td mat-cell *matCellDef="let element"
+                            [ngClass]="{'text-color': element.marked_as_pay_later === 'pending' && (!element.amount || element.amount === '')}">
+                            {{ element.marked_as_pay_later === 'pending' &&
+                            (!element.amount || element.amount === '')
+                            ? 'Pay Later': element.amount }}</td>
                     </ng-container>
-                    <ng-container matColumnDef="action">
+                    <!-- <ng-container matColumnDef="action">
                         <th mat-header-cell *matHeaderCellDef> Actions </th>
                         <td mat-cell *matCellDef="let element">
                             <button class="delete-button" (click)="deleteFund(element.id)">
                                 <mat-icon svgIcon="delete"></mat-icon> </button>
                         </td>
-                    </ng-container>
+                    </ng-container> -->
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

@@ -5,45 +5,44 @@
                 svgIcon="add"></mat-icon></button>
     </div>
 
-    <div class="filter-header main-header">
+    <!-- <div class="filter-header main-header">
         <form class="filter-form" [formGroup]="expensesFilterForm">
             <mat-form-field appearance="outline" class="no-bottom mat-form-field">
                 <mat-label>Name</mat-label>
                 <input matInput formControlName="name" placeholder="Enter name" />
             </mat-form-field>
 
-            <!-- date field -->
-            <mat-form-field appearance="outline" class="no-bottom mat-form-field">
-                <mat-label>Expense Date</mat-label>
-                <input matInput [matDatepicker]="picker" formControlName="expense_date" placeholder="YYYY-MM-DD" />
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
+    <mat-form-field appearance="outline" class="no-bottom mat-form-field">
+        <mat-label>Expense Date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="expense_date" placeholder="YYYY-MM-DD" />
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
 
-            <!-- payment field -->
-            <mat-form-field appearance="outline" class="no-bottom mat-form-field">
-                <mat-label>Payment Method</mat-label>
-                <mat-select formControlName="payment_method">
-                    <mat-option *ngFor="let payment of paymentMethodOptions" [value]="payment">
-                        {{ payment }}
-                    </mat-option>
-                </mat-select>
+    <mat-form-field appearance="outline" class="no-bottom mat-form-field">
+        <mat-label>Payment Method</mat-label>
+        <mat-select formControlName="payment_method">
+            <mat-option *ngFor="let payment of paymentMethodOptions" [value]="payment">
+                {{ payment }}
+            </mat-option>
+        </mat-select>
 
-            </mat-form-field>
-            <!-- status field -->
-            <mat-form-field appearance="outline" class="no-bottom mat-form-field">
-                <mat-label>Status</mat-label>
-                <mat-select formControlName="status">
-                    <mat-option *ngFor="let statusType of statusTypeOptions" [value]="statusType">
-                        {{ statusType }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </form>
-        <button class="mat-raised-button" type="button" (click)="resetFilters()">
-            Reset
-        </button>
-    </div>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="no-bottom mat-form-field">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+            <mat-option *ngFor="let statusType of statusTypeOptions" [value]="statusType">
+                {{ statusType }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    </form>
+    <button class="mat-raised-button" type="button" (click)="resetFilters()">
+        Reset
+    </button>
+    </div> -->
+
     <div class="main-body">
         <div style="overflow: auto;">
             <table mat-table [dataSource]="dataSource">

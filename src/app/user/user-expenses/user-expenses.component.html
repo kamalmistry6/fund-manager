@@ -3,18 +3,16 @@
         <form class="expenses-form" [formGroup]="userExpensesForm" (ngSubmit)="onSubmit()">
             <div class="form-wrapper">
                 <div class="form-group">
-                    <!-- <label>Description</label> -->
-                    <input type="text" formControlName="title" placeholder="Enter Desc" />
+                    <input type="text" formControlName="title" placeholder="Enter Description" />
 
                 </div>
                 <!-- amount -->
                 <div class="form-group">
-                    <!-- <label>Amount</label> -->
                     <input type="number" formControlName="amount" placeholder="Enter amount" />
 
                 </div>
             </div>
-            <h4>Available Balance: {{totalAmount - userTotalAmount}}</h4>
+            <!-- <h4>Available Balance: {{totalAmount - userTotalAmount}}</h4> -->
             <button class="mat-raised-button" type="submit">
                 Add Expenses
             </button>

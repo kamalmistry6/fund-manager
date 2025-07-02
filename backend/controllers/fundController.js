@@ -21,30 +21,52 @@ exports.getFunds = async (req, res) => {
 
 exports.addFund = async (req, res) => {
   try {
-    const { receipt_no, name, mode_of_payment, amount, bulding } = req.body;
-
-    if (!receipt_no || !name || !mode_of_payment || !amount || !bulding) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
-    // Check for duplicate receipt no
-    const receiptExists = await fundModel.checkReceiptExists(receipt_no);
-    if (receiptExists) {
-      return res.status(409).json({ message: "Receipt number already exists" });
-    }
-
-    const fundData = {
+    const {
       receipt_no,
       name,
       mode_of_payment,
+      amount,
+      bulding,
+      marked_as_pay_later,
+    } = req.body;
+
+    if (!name || !bulding) {
+      return res
+        .status(400)
+        .json({ message: "Receipt No, Name and Building are required" });
+    }
+
+    // If marked_as_pay_later is 'paid', validate receipt_no, mode_of_payment, and amount
+    if (marked_as_pay_later === "paid") {
+      if (!receipt_no || !mode_of_payment || !amount) {
+        return res.status(400).json({
+          message:
+            "Receipt No, Mode of Payment, and Amount are required when marked as paid",
+        });
+      }
+
+      const receiptExists = await fundModel.checkReceiptExists(receipt_no);
+      if (receiptExists) {
+        return res
+          .status(409)
+          .json({ message: "Receipt number already exists" });
+      }
+    }
+
+    const fundData = {
+      receipt_no: marked_as_pay_later === "paid" ? receipt_no : null,
+      name,
+      mode_of_payment: marked_as_pay_later === "paid" ? mode_of_payment : null,
       date: new Date(),
       place: "Palghar",
-      amount,
+      amount: marked_as_pay_later === "paid" ? amount : null,
       year: "22",
       bulding,
+      marked_as_pay_later,
     };
 
     const result = await fundModel.addFund(fundData);
+
     res.status(201).json({
       message: "Fund record added successfully",
       id: result.insertId,

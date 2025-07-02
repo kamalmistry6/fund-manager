@@ -5,6 +5,7 @@ export interface fund {
   mode_of_payment: string;
   date: string;
   place: string;
+  marked_as_pay_later: string;
   amount: string;
   year: string;
 }
