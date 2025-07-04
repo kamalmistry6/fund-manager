@@ -61,6 +61,7 @@ export class AuthService {
   getRole(): string | null {
     return localStorage.getItem('role');
   }
+  
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('role');

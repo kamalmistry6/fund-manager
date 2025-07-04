@@ -8,6 +8,7 @@ exports.getFunds = async (req, res) => {
       name: req.query.name || null,
       date: req.query.date || null,
       mode_of_payment: req.query.mode_of_payment || null,
+      marked_as_pay_later: req.query.marked_as_pay_later || null,
       bulding: req.query.bulding || null,
     };
 

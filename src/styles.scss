@@ -123,32 +123,31 @@ td {
   background: transparent;
   cursor: pointer;
 }
-
 .custom-toast {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #323232;
-  color: #fff;
-  padding: 12px 20px;
+  padding: 14px 24px;
   border-radius: 6px;
+  color: #fff;
+  font-size: 16px;
   opacity: 0;
-  transition: all 0.5s ease;
-  z-index: 9999;
-  font-size: 14px;
-}
-
-.custom-toast.success {
-  background-color: #4caf50;
-}
-
-.custom-toast.error {
-  background-color: #f44336;
+  pointer-events: none;
+  transition: all 0.4s ease;
+  z-index: 1000;
 }
 
 .custom-toast.show {
   opacity: 1;
-  transform: translateY(-10px);
+  pointer-events: auto;
+}
+
+.custom-toast.success {
+  background-color: #28a745;
+}
+
+.custom-toast.error {
+  background-color: #dc3545;
 }
 
 .dialog-wrapper {

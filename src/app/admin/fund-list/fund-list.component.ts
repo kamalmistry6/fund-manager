@@ -105,8 +105,9 @@ export class FundListComponent implements OnInit {
     this.filterForm = this.fb.group({
       receipt_no: [''],
       name: [''],
-      date: [''],
-      mode_of_payment: [''],
+      // date: [''],
+      // mode_of_payment: [''],
+      marked_as_pay_later: [''],
     });
   }
 

@@ -65,10 +65,12 @@
                 <mat-error *ngIf="expensesForm.get('amount')?.hasError('required')">Please enter Amount</mat-error>
             </mat-form-field>
             <div class="input-field">
-                <label for="profile_photo">Profile Photo</label>
-                <input type="file" id="profile_photo" (change)="onFileSelected($event)" accept="image/*" />
+                <div class="file-input-wrapper">
+                    <input type="file" id="profile_photo" (change)="onFileSelected($event)" accept="image/*" />
+                    <label for="profile_photo" class="file-label">Select bill Photo</label>
+                    <span class="file-name">{{ selectedFileName }}</span>
+                </div>
             </div>
-
         </form>
     </div>
 </div>

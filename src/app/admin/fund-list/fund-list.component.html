@@ -73,7 +73,7 @@
                 </div>
                 <div class="form-group">
                     <label>Marked As Pay</label>
-                    <select formControlName="marked_as_pay_later" class="form-control">
+                    <select formControlName="marked_as_pay_later" class="input-select">
                         <option value="paid">Paid</option>
                         <option value="pending">Pending</option>
                     </select>
@@ -103,6 +103,10 @@
                     <div class="filter-group">
                         <input type="text" formControlName="name" placeholder="Name" />
                     </div>
+                    <div class="filter-group">
+                        <input type="text" formControlName="marked_as_pay_later" placeholder="marked as Pay Later" />
+                    </div>
+
                     <!-- 
                     <div class="filter-group">
                         <input type="text" formControlName="mode_of_payment" placeholder="Mode of Payment" />
@@ -166,7 +170,7 @@
                             [ngClass]="{'text-color': element.marked_as_pay_later === 'pending' && (!element.amount || element.amount === '')}">
                             {{ element.marked_as_pay_later === 'pending' &&
                             (!element.amount || element.amount === '')
-                            ? 'Pay Later': element.amount }}</td>
+                            ? 'Pay Later':'₹'+ element.amount }}</td>
                     </ng-container>
                     <!-- <ng-container matColumnDef="action">
                         <th mat-header-cell *matHeaderCellDef> Actions </th>

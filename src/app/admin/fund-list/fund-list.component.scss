@@ -159,6 +159,16 @@
     border-color: #c4d9ff;
   }
 }
+.input-select {
+  padding: 10px;
+  width: 100%;
+  font-size: 15px;
+  outline: none;
+  background: none;
+  border-radius: 3px;
+  border: 1px solid #bfbfbf;
+}
+
 .radio-group {
   display: flex;
   align-items: center;

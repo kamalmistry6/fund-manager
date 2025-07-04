@@ -25,6 +25,11 @@ app.use("/api/user-expenses", userExpenses);
 app.use("/api/allot", fundAllotRoutes);
 app.use("/api/auth", authRoutes);
 
+// ✅ Health check ping route — ADD THIS HERE
+app.get("/ping", (req, res) => {
+  res.status(200).send("pong");
+});
+
 // Server start
 const PORT = process.env.PORT || 5000;
 

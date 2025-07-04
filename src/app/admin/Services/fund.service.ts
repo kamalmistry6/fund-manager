@@ -26,6 +26,9 @@ export class FundService {
     if (filters.mode_of_payment) {
       params = params.set('mode_of_payment', filters.mode_of_payment);
     }
+    if (filters.marked_as_pay_later) {
+      params = params.set('marked_as_pay_later', filters.marked_as_pay_later);
+    }
     if (filters.building) {
       params = params.set('building', filters.building);
     }

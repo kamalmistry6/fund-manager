@@ -20,6 +20,9 @@
         <li *ngIf="permissionService.isAdmin()">
             <a routerLink="/admin/allot-expenses" routerLinkActive="active-link">Allot </a>
         </li>
+        <li>
+            <a href="#" (click)="logout()">Logout</a>
+        </li>
     </ul>
 
     <button class="navbar-menu-button" (click)="togglePopup()">
@@ -49,6 +52,10 @@
             <li *ngIf="permissionService.isAdmin()">
                 <a routerLink="/admin/allot-expenses" (click)="togglePopup()" routerLinkActive="active-link">Allot </a>
             </li>
+            <li>
+                <a href="#" (click)="logout(); togglePopup()">Logout</a>
+            </li>
+
         </ul>
     </div>
 </div>

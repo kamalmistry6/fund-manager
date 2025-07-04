@@ -15,3 +15,35 @@
 ::ng-deep .mat-mdc-dialog-container {
   border-radius: 0 !important;
 }
+.input-field {
+  width: 100%;
+
+  .file-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+
+  .file-label {
+    background-color: #007bff;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+
+  .file-name {
+    font-size: 14px;
+    color: #333;
+  }
+}

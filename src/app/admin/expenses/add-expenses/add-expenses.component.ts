@@ -16,6 +16,7 @@ export class AddExpensesComponent {
   statusTypeOptions: string[] = ['Paid', 'Pending'];
   paymentMethodOptions: string[] = ['Cash', 'Online', 'Cheque'];
   selectedFile: File | null = null;
+  selectedFileName: string = 'No file chosen';
 
   constructor(
     private dialogRef: MatDialogRef<AddExpensesComponent>,
@@ -44,6 +45,9 @@ export class AddExpensesComponent {
     const file: File = event.target.files[0];
     if (file) {
       this.selectedFile = file;
+      this.selectedFileName = file.name;
+    } else {
+      this.selectedFileName = 'No file chosen';
     }
   }
 

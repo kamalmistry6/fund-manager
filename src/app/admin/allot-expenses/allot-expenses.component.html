@@ -23,7 +23,7 @@
         </form>
     </div>
     <div class="main-header " *ngIf="this.users">
-        <h4>Total Expenses Amount of {{userName}} is {{userTotalAmount}}</h4>
+        <h4>Total Expenses Amount of {{userName}} is {{'₹'+ userTotalAmount}}</h4>
     </div>
     <div class="main-header allot-wrapper">
         <h4>Select Membeer :</h4>
@@ -51,7 +51,7 @@
                 </ng-container>
                 <ng-container matColumnDef="amount">
                     <th mat-header-cell *matHeaderCellDef>Amount</th>
-                    <td mat-cell *matCellDef="let element">{{element.amount}}</td>
+                    <td mat-cell *matCellDef="let element">₹ {{element.amount}}</td>
                 </ng-container>
                 <!-- <ng-container matColumnDef="action">
                         <th mat-header-cell *matHeaderCellDef> Actions </th>

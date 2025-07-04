@@ -24,6 +24,11 @@ exports.getFunds = async (filters) => {
     params.push(filters.mode_of_payment);
   }
 
+  if (filters.marked_as_pay_later) {
+    query += ` AND marked_as_pay_later = ?`;
+    params.push(filters.marked_as_pay_later);
+  }
+
   query += ` ORDER BY id DESC`;
 
   const [rows] = await db.execute(query, params);
