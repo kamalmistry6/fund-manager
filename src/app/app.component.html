@@ -1,1 +1,6 @@
 <router-outlet></router-outlet>
+<div *ngIf="showInstallButton" class="install-popup">
+    <p>Install this app on your device for a better experience!</p>
+    <button (click)="promptInstall()">Install</button>
+    <button (click)="showInstallButton = false">Maybe Later</button>
+</div>

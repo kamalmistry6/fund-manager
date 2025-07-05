@@ -5,3 +5,34 @@
 ::ng-deep .mdc-text-field--no-label {
   padding: 0px 10px !important;
 }
+.install-popup {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  background: #1976d2;
+  color: white;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 1000;
+
+  button {
+    margin: 8px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+
+    &:first-child {
+      background: #ffffff;
+      color: #1976d2;
+    }
+
+    &:last-child {
+      background: transparent;
+      color: #fff;
+      border: 1px solid #fff;
+    }
+  }
+}
