@@ -153,23 +153,22 @@ td {
 .dialog-wrapper {
   background: #fbfbfb;
   overflow: hidden;
+}
+.dialog-header {
+  background: #e8f9ff;
+  color: #a998ff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 0.5px solid #c4d9ff;
+}
 
-  .dialog-header {
-    background: #e8f9ff;
-    color: #a998ff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem;
-    border-bottom: 0.5px solid #c4d9ff;
-  }
-
-  .dialog-body {
-    background: #fbfbfb;
-    padding: 1rem;
-    max-height: 100%;
-    overflow: auto;
-  }
+.dialog-body {
+  background: #fbfbfb;
+  padding: 1rem;
+  max-height: 100%;
+  overflow: auto;
 }
 
 .main-wrapper {
@@ -190,6 +189,15 @@ td {
   padding: 5px;
   font-size: 1.2rem;
   color: red;
+  transition: color 0.3s ease-in-out;
+}
+.view-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 1.2rem;
+  color: #0066ff;
   transition: color 0.3s ease-in-out;
 }
 // html,

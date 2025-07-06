@@ -45,7 +45,7 @@ exports.checkReceiptExists = async (receipt_no) => {
 
 exports.addFund = async (fundData) => {
   const [result] = await db.execute(
-    `INSERT INTO fund_records (receipt_no, name, mode_of_payment, date, place, amount, year,bulding, marked_as_pay_later)
+    `INSERT INTO fund_records (receipt_no, name, mode_of_payment, date, place, amount, year,building, marked_as_pay_later)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       fundData.receipt_no,
@@ -55,7 +55,7 @@ exports.addFund = async (fundData) => {
       fundData.place,
       fundData.amount,
       fundData.year,
-      fundData.bulding,
+      fundData.building,
       fundData.marked_as_pay_later || "paid",
     ]
   );

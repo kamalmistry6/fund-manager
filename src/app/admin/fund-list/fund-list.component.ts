@@ -12,6 +12,8 @@ import { ToastService } from '../../services/toast.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { FundService } from '../Services/fund.service';
 import { fund } from '../models/funds';
+import { ViewReceiptComponent } from './view-receipt/view-receipt.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-fund-list',
@@ -48,12 +50,12 @@ export class FundListComponent implements OnInit {
     'sr_no',
     'receipt_no',
     'name',
-    'bulding',
+    'building',
     'mode_of_payment',
     'date',
     'marked_as_pay_later',
     'amount',
-    // 'action',
+    'action',
   ];
 
   fundDataSource = new MatTableDataSource<fund>();
@@ -67,7 +69,8 @@ export class FundListComponent implements OnInit {
     private fundService: FundService,
     private cdr: ChangeDetectorRef,
     private fb: FormBuilder,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private dialog: MatDialog
   ) {
     this.initializeForm();
     this.initializeFilterForm();
@@ -89,7 +92,7 @@ export class FundListComponent implements OnInit {
     this.fundForm = this.fb.group({
       receipt_no: [''],
       name: ['', Validators.required],
-      bulding: ['', Validators.required],
+      building: ['', Validators.required],
       mode_of_payment: ['cash', Validators.required],
       year: ['22', Validators.required],
       date: [today, Validators.required],
@@ -108,6 +111,16 @@ export class FundListComponent implements OnInit {
       // date: [''],
       // mode_of_payment: [''],
       marked_as_pay_later: [''],
+    });
+  }
+
+  openDialog(element: fund): void {
+    const dialogRef = this.dialog.open(ViewReceiptComponent, {
+      width: '90vw',
+      maxWidth: '600px',
+      maxHeight: '90vh',
+      panelClass: 'custom-dialog-container',
+      data: element,
     });
   }
 
@@ -152,11 +165,11 @@ export class FundListComponent implements OnInit {
     const savedBuilding = localStorage.getItem('selectedBuilding');
     if (savedBuilding) {
       this.buildingControl.setValue(savedBuilding);
-      this.fundForm.patchValue({ bulding: savedBuilding });
+      this.fundForm.patchValue({ building: savedBuilding });
     }
 
     this.buildingControl.valueChanges.subscribe((selected) => {
-      this.fundForm.patchValue({ bulding: selected });
+      this.fundForm.patchValue({ building: selected });
       localStorage.setItem('selectedBuilding', selected || '');
     });
   }
@@ -227,7 +240,7 @@ export class FundListComponent implements OnInit {
           mode_of_payment: 'cash',
           date: formatDate(new Date(), 'yyyy-MM-dd', 'en'),
           year: '22',
-          bulding: selectedBuilding,
+          building: selectedBuilding,
           marked_as_pay_later: 'paid',
         });
 

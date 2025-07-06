@@ -6,6 +6,6 @@ export interface fund {
   date: string;
   place: string;
   marked_as_pay_later: string;
-  amount: string;
+  amount: number;
   year: string;
 }

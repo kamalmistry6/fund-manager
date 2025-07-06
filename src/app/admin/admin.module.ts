@@ -9,6 +9,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { SharedModule } from '../shared/shared.module';
 import { AddExpensesComponent } from './expenses/add-expenses/add-expenses.component';
 import { AllotExpensesComponent } from './allot-expenses/allot-expenses.component';
+import { ViewReceiptComponent } from './fund-list/view-receipt/view-receipt.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { AllotExpensesComponent } from './allot-expenses/allot-expenses.componen
     DashboardComponent,
     AddExpensesComponent,
     AllotExpensesComponent,
+    ViewReceiptComponent,
   ],
   imports: [CommonModule, AdminRoutingModule, SharedModule],
 })

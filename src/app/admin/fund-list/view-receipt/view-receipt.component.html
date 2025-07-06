@@ -1,0 +1,58 @@
+<div class="dialog-header">
+    <h3>
+        View Recepit
+    </h3>
+    <div style="display: flex;align-items: center;gap: 10px;">
+        <button (click)="downloadReceipt()" class="close-btn">
+            <mat-icon svgIcon="download-pdf"></mat-icon>
+        </button>
+        <button class="close-btn" (click)="closeDialog()">
+            <mat-icon svgIcon="close"></mat-icon>
+        </button>
+    </div>
+</div>
+<div id="receipt-wrapper">
+
+    <div class="receipt-wrapper">
+        <div class="top-bar">
+            <span>स्थापना - २००४</span>
+            <span>ॐ गं गणपतये नम</span>
+            <span>वर्ष : २२</span>
+        </div>
+        <div class="top-header">
+            <img src="../../../assets/image/logo.png" alt="Logo" />
+            <h1>वृंदावन पार्क मित्र मंडळ</h1>
+        </div>
+        <div class="address-header">
+            <span>पत्ता : वृंदावन पार्क, टेंभोडे रोड, पालघर</span>
+        </div>
+        <div class="date-header">
+            <span>पावती क्र. {{receiptData.receipt_no}}</span>
+            <span>दिनांक : {{receiptData.date | date:'dd-MM-yy'}}</span>
+        </div>
+        <div class="detail-header">
+            <div>
+                <p>श्री./ श्रीमती :</p> <span>{{receiptData.name}}</span>
+            </div>
+            <P>रा. {{receiptData.building}} आपणांकडून श्री गणेशोत्सवास वर्गणी अक्षरी रूपये
+                {{numberToWords(receiptData.amount)}} मात्र रोख
+                मिळाले.
+                धन्यवाद !</P>
+        </div>
+        <div class="footer">
+            <div class="rs-box">
+                <div class="rs-logo">
+                    <h3>₹</h3>
+                </div>
+                <div class="rs-text">
+                    <h3>{{ receiptData.amount | number:'1.0-0' }} /-</h3>
+
+                </div>
+            </div>
+
+            <div class="sign-box">
+                <span>signature of recipient</span>
+            </div>
+        </div>
+    </div>
+</div>

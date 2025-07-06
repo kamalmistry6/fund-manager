@@ -10,6 +10,7 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
+  // LOGIN
   login(credentials: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/auth/login`, credentials).pipe(
       tap((res: any) => {
@@ -18,6 +19,11 @@ export class AuthService {
         this.authStatusSubject.next(true);
       })
     );
+  }
+
+  // REGISTER
+  register(credentials: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/auth/register`, credentials);
   }
 
   getToken() {
@@ -61,7 +67,7 @@ export class AuthService {
   getRole(): string | null {
     return localStorage.getItem('role');
   }
-  
+
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('role');

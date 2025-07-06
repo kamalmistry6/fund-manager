@@ -9,7 +9,7 @@ exports.getFunds = async (req, res) => {
       date: req.query.date || null,
       mode_of_payment: req.query.mode_of_payment || null,
       marked_as_pay_later: req.query.marked_as_pay_later || null,
-      bulding: req.query.bulding || null,
+      building: req.query.building || null,
     };
 
     const funds = await fundModel.getFunds(filters);
@@ -27,11 +27,11 @@ exports.addFund = async (req, res) => {
       name,
       mode_of_payment,
       amount,
-      bulding,
+      building,
       marked_as_pay_later,
     } = req.body;
 
-    if (!name || !bulding) {
+    if (!name || !building) {
       return res
         .status(400)
         .json({ message: "Receipt No, Name and Building are required" });
@@ -62,7 +62,7 @@ exports.addFund = async (req, res) => {
       place: "Palghar",
       amount: marked_as_pay_later === "paid" ? amount : null,
       year: "22",
-      bulding,
+      building,
       marked_as_pay_later,
     };
 
@@ -107,7 +107,7 @@ exports.downloadFundsExcel = async (req, res) => {
     worksheet.columns = [
       { header: "Receipt No", key: "receipt_no", width: 15 },
       { header: "Name", key: "name", width: 20 },
-      { header: "Building", key: "bulding", width: 20 },
+      { header: "Building", key: "building", width: 20 },
       { header: "Mode of Payment", key: "mode_of_payment", width: 15 },
       { header: "Place", key: "place", width: 15 },
       { header: "Year", key: "year", width: 8 },

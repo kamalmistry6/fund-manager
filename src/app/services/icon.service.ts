@@ -46,6 +46,14 @@ export class IconService {
       'building',
       this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/building.svg')
     );
+    this.iconRegistry.addSvgIcon(
+      'view',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/eye.svg')
+    );
+    this.iconRegistry.addSvgIcon(
+      'download-pdf',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/pdf.svg')
+    );
 
     this.iconsRegistered = true;
   }

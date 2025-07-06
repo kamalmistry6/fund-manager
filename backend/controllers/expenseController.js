@@ -9,6 +9,26 @@ const normalizeExpensePayload = (payload) => ({
   status: payload.status || null,
   billPhoto: payload.bill_photo || null,
 });
+// Add Expense
+exports.addExpense = async (req, res) => {
+  const expense = normalizeExpensePayload(req.body);
+
+  // ✅ Fixed: checking 'name' instead of 'category'
+  if (!expense.name || !expense.amount) {
+    return res.status(400).json({ message: "Name and Amount are required" });
+  }
+
+  const billPhotoPath = req.file ? req.file.filename : null;
+
+  expense.billPhoto = billPhotoPath;
+
+  try {
+    await expenseModel.addExpense(expense);
+    res.status(201).json({ message: "Expense added successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding expense", error });
+  }
+};
 // Get All Expenses
 exports.getExpenses = async (req, res) => {
   try {
@@ -27,27 +47,6 @@ exports.getExpenses = async (req, res) => {
   }
 };
 
-// Add Expense
-exports.addExpense = async (req, res) => {
-  const expense = normalizeExpensePayload(req.body);
-
-  // ✅ Fixed: checking 'name' instead of 'category'
-  if (!expense.name || !expense.amount) {
-    return res.status(400).json({ message: "Name and Amount are required" });
-  }
-
-  const billPhotoPath = req.file ? req.file.filename : null;
-
-  expense.billPhoto = billPhotoPath;
-
-
-  try {
-    await expenseModel.addExpense(expense);
-    res.status(201).json({ message: "Expense added successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Error adding expense", error });
-  }
-};
 
 // Delete Expense
 exports.deleteExpense = async (req, res) => {

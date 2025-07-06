@@ -5,6 +5,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { FundListComponent } from './fund-list/fund-list.component';
 import { ExpensesComponent } from './expenses/expenses.component';
 import { AllotExpensesComponent } from './allot-expenses/allot-expenses.component';
+import { ViewReceiptComponent } from './fund-list/view-receipt/view-receipt.component';
 
 const routes: Routes = [
   { path: '', component: AdminComponent },
@@ -15,6 +16,10 @@ const routes: Routes = [
   {
     path: 'fund-list',
     component: FundListComponent,
+  },
+  {
+    path: 'view-receipt',
+    component: ViewReceiptComponent,
   },
   {
     path: 'fund-expenses',
