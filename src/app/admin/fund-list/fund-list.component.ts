@@ -113,7 +113,7 @@ export class FundListComponent implements OnInit {
       marked_as_pay_later: [''],
     });
   }
-
+  // view recipet dialog
   openDialog(element: fund): void {
     const dialogRef = this.dialog.open(ViewReceiptComponent, {
       width: '90vw',
