@@ -24,7 +24,7 @@ export class DashboardComponent {
   }
 
   getDashboardStats(): void {
-    this.dashboardService.getdashboardStats().subscribe(
+    this.dashboardService.getDashboardStats().subscribe(
       (data: ExpensesDashboardStats) => {
         this.stats = data;
       },
