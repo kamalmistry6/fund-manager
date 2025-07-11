@@ -5,29 +5,34 @@ const dotenv = require("dotenv");
 
 dotenv.config(); // load .env values
 
-// User Registration (for both admin & user)
+const SALT_ROUNDS = 10;
+
+// User Registration (Admin & User)
 exports.register = async (req, res) => {
   const { name, email, password, role } = req.body;
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
     await db.query(
       "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)",
       [name, email, hashedPassword, role || "user"]
     );
-    res.json({ message: "User registered successfully" });
+
+    return res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Registration Error:", err);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
 // User Login
 exports.login = async (req, res) => {
-  console.log(req.body);
   const { email, password } = req.body;
   try {
-    const [userRows] = await db.query("SELECT * FROM users WHERE email = ?", [
-      email,
-    ]);
+    const [userRows] = await db.query(
+      "SELECT * FROM users WHERE email = ? LIMIT 1",
+      [email]
+    );
 
     if (userRows.length === 0) {
       return res.status(404).json({ error: "User not found" });
@@ -41,19 +46,24 @@ exports.login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { userId: user.id, role: user.role },
+      { userId: user.id, role: user.role, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: "2h" }
     );
 
-    res.json({ message: "Login successful", token, role: user.role });
+    return res.status(200).json({
+      message: "Login successful",
+      token,
+      role: user.role,
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Login Error:", err);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
+// Fetch User Names for Admin
 exports.getUserNames = async (req, res) => {
-  // Only allow admins
   if (req.user.role !== "admin") {
     return res.status(403).json({ error: "Access denied. Admins only." });
   }
@@ -62,8 +72,9 @@ exports.getUserNames = async (req, res) => {
     const [rows] = await db.query(
       "SELECT id, name FROM users WHERE role = 'user'"
     );
-    res.json(rows);
+    return res.status(200).json(rows);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Fetch Users Error:", err);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };

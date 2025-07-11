@@ -1,6 +1,10 @@
 const fundModel = require("../models/fundModel");
 const ExcelJS = require("exceljs");
 
+const PLACE = "Palghar";
+const YEAR = "22";
+
+// GET: Funds with filters
 exports.getFunds = async (req, res) => {
   try {
     const filters = {
@@ -13,13 +17,14 @@ exports.getFunds = async (req, res) => {
     };
 
     const funds = await fundModel.getFunds(filters);
-    res.json(funds);
+    return res.status(200).json(funds);
   } catch (err) {
     console.error("Error fetching funds:", err);
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: "Failed to fetch fund records" });
   }
 };
 
+// POST: Add new fund
 exports.addFund = async (req, res) => {
   try {
     const {
@@ -28,24 +33,25 @@ exports.addFund = async (req, res) => {
       mode_of_payment,
       amount,
       building,
-      marked_as_pay_later,
+      marked_as_pay_later = "paid", // default to 'paid'
     } = req.body;
 
     if (!name || !building) {
       return res
         .status(400)
-        .json({ message: "Receipt No, Name and Building are required" });
+        .json({ message: "Name and Building are required" });
     }
 
-    // If marked_as_pay_later is 'paid', validate receipt_no, mode_of_payment, and amount
-    if (marked_as_pay_later === "paid") {
-      if (!receipt_no || !mode_of_payment || !amount) {
-        return res.status(400).json({
-          message:
-            "Receipt No, Mode of Payment, and Amount are required when marked as paid",
-        });
-      }
+    const isPaid = marked_as_pay_later === "paid";
 
+    if (isPaid && (!receipt_no || !mode_of_payment || !amount)) {
+      return res.status(400).json({
+        message:
+          "Receipt No, Mode of Payment, and Amount are required when marked as paid",
+      });
+    }
+
+    if (isPaid) {
       const receiptExists = await fundModel.checkReceiptExists(receipt_no);
       if (receiptExists) {
         return res
@@ -55,55 +61,51 @@ exports.addFund = async (req, res) => {
     }
 
     const fundData = {
-      receipt_no: marked_as_pay_later === "paid" ? receipt_no : null,
+      receipt_no: isPaid ? receipt_no : null,
       name,
-      mode_of_payment: marked_as_pay_later === "paid" ? mode_of_payment : null,
+      mode_of_payment: isPaid ? mode_of_payment : null,
       date: new Date(),
-      place: "Palghar",
-      amount: marked_as_pay_later === "paid" ? amount : null,
-      year: "22",
+      place: PLACE,
+      amount: isPaid ? amount : null,
+      year: YEAR,
       building,
       marked_as_pay_later,
     };
 
     const result = await fundModel.addFund(fundData);
-
-    res.status(201).json({
-      message: "Fund record added successfully",
-      id: result.insertId,
-    });
+    return res
+      .status(201)
+      .json({ message: "Fund record added successfully", id: result.insertId });
   } catch (err) {
     console.error("Error adding fund:", err);
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: "Failed to add fund record" });
   }
 };
 
+// DELETE: Fund
 exports.deleteFund = async (req, res) => {
   try {
-    const { id } = req.params;
-    const result = await fundModel.deleteFund(id);
+    const result = await fundModel.deleteFund(req.params.id);
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Record not found" });
     }
 
-    res.json({ message: "Record deleted successfully" });
+    return res.status(200).json({ message: "Record deleted successfully" });
   } catch (err) {
     console.error("Error deleting fund:", err);
-    res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: "Failed to delete fund record" });
   }
 };
 
+// GET: Download Excel
 exports.downloadFundsExcel = async (req, res) => {
   try {
-    // ✅ Fetch all fund records (no filters)
     const funds = await fundModel.getAllFunds();
 
-    // Create workbook & worksheet
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Fund Records");
 
-    // Define columns
     worksheet.columns = [
       { header: "Receipt No", key: "receipt_no", width: 15 },
       { header: "Name", key: "name", width: 20 },
@@ -115,12 +117,10 @@ exports.downloadFundsExcel = async (req, res) => {
       { header: "Amount", key: "amount", width: 10 },
     ];
 
-    // Add data rows
     funds.forEach((fund) => {
       worksheet.addRow(fund);
     });
 
-    // Set headers
     res.setHeader(
       "Content-Type",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -130,7 +130,6 @@ exports.downloadFundsExcel = async (req, res) => {
       `attachment; filename=fund-records-${Date.now()}.xlsx`
     );
 
-    // Write workbook to response stream
     await workbook.xlsx.write(res);
     res.end();
   } catch (err) {

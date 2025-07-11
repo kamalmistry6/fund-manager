@@ -2,56 +2,48 @@ const db = require("../config/db");
 
 exports.getDashboardStats = async (req, res) => {
   try {
-    // Payment Mode Stats
-    const [paymentModeRows] = await db.execute(`
+    // Combined Payment Mode & Status Stats
+    const [summaryStatsRows] = await db.execute(`
       SELECT 
-        COUNT(*) as total,
-        SUM(payment_method = 'online') as online,
-        SUM(payment_method = 'cash') as cash,
-        SUM(payment_method = 'cheque') as cheque
+        COUNT(*) as totalExpenses,
+        SUM(payment_method = 'online') as onlinePayments,
+        SUM(payment_method = 'cash') as cashPayments,
+        SUM(payment_method = 'cheque') as chequePayments,
+        SUM(status = 'paid') as paidExpenses,
+        SUM(status = 'pending') as pendingExpenses
       FROM expense
     `);
 
-    // Status Stats
-    const [statusRows] = await db.execute(`
+    // Amount Stats + Total Receipts
+    const [fundStatsRows] = await db.execute(`
       SELECT 
-        SUM(status = 'paid') as paid,
-        SUM(status = 'pending') as pending
-      FROM expense
-    `);
-    const [recepitRows] = await db.execute(`
-      SELECT 
-        SUM(status = 'paid') as paid,
-        SUM(status = 'pending') as pending
-      FROM expense
-    `);
-
-    // Amount Stats
-    const [amountRows] = await db.execute(`
-      SELECT 
-         (SELECT SUM(amount) FROM fund_records WHERE marked_as_pay_later = 'paid') as totalAmount,
+        COUNT(*) as totalReceipts,
+        SUM(CASE WHEN marked_as_pay_later = 'paid' THEN amount ELSE 0 END) as totalAmount,
         SUM(CASE WHEN mode_of_payment = 'online' THEN amount ELSE 0 END) as onlineAmount,
         SUM(CASE WHEN mode_of_payment = 'cash' THEN amount ELSE 0 END) as cashAmount,
         SUM(CASE WHEN mode_of_payment = 'cheque' THEN amount ELSE 0 END) as chequeAmount
       FROM fund_records
     `);
 
-    // Total Expenses Count
-    const [totalExpensesRows] = await db.execute(`
-      SELECT COUNT(*) as totalExpenses FROM expense
-    `);
-
-    const [receiptRows] = await db.execute(`
-      SELECT COUNT(*) as totalReceipt FROM fund_records
-    `);
-
     // Final Structured Response
     const stats = {
-      paymentModeStats: paymentModeRows[0],
-      statusStats: statusRows[0],
-      amountStats: amountRows[0],
-      totalExpenses: totalExpensesRows[0].totalExpenses,
-      totalReceipt: receiptRows[0].totalReceipt,
+      totalExpenses: summaryStatsRows[0].totalExpenses,
+      paymentModeStats: {
+        online: summaryStatsRows[0].onlinePayments,
+        cash: summaryStatsRows[0].cashPayments,
+        cheque: summaryStatsRows[0].chequePayments,
+      },
+      statusStats: {
+        paid: summaryStatsRows[0].paidExpenses,
+        pending: summaryStatsRows[0].pendingExpenses,
+      },
+      totalReceipt: fundStatsRows[0].totalReceipts,
+      amountStats: {
+        totalAmount: fundStatsRows[0].totalAmount,
+        onlineAmount: fundStatsRows[0].onlineAmount,
+        cashAmount: fundStatsRows[0].cashAmount,
+        chequeAmount: fundStatsRows[0].chequeAmount,
+      },
     };
 
     res.json(stats);

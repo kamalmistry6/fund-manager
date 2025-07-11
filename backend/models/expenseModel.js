@@ -1,5 +1,6 @@
 const db = require("../config/db");
 
+// Get Expenses (with filters)
 exports.getExpenses = async (filters) => {
   let query = `SELECT * FROM expense WHERE 1=1`;
   const params = [];
@@ -9,14 +10,14 @@ exports.getExpenses = async (filters) => {
     params.push(`%${filters.name}%`);
   }
 
-  if (filters.expense_date) {
+  if (filters.expenseDate) {
     query += ` AND DATE(expense_date) = ?`;
-    params.push(filters.expense_date);
+    params.push(filters.expenseDate);
   }
 
-  if (filters.payment_method) {
+  if (filters.paymentMethod) {
     query += ` AND payment_method = ?`;
-    params.push(filters.payment_method);
+    params.push(filters.paymentMethod);
   }
 
   if (filters.status) {
@@ -34,16 +35,17 @@ exports.getExpenses = async (filters) => {
 exports.addExpense = async (expense) => {
   const sql = `
     INSERT INTO expense (name, description, expense_date, payment_method, status, amount, bill_photo)
-    VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
 
   const values = [
     expense.name,
     expense.description,
-    expense.expenseDate || expense.expense_date,
-    expense.paymentMethod || expense.payment_method,
+    expense.expenseDate,
+    expense.paymentMethod,
     expense.status,
     expense.amount,
-    expense.billPhoto || expense.bill_photo,
+    expense.billPhoto,
   ];
 
   return db.execute(sql, values);
@@ -51,6 +53,5 @@ exports.addExpense = async (expense) => {
 
 // Delete Expense
 exports.deleteExpense = async (id) => {
-  const sql = `DELETE FROM expense WHERE id = ?`;
-  return db.execute(sql, [id]);
+  return db.execute(`DELETE FROM expense WHERE id = ?`, [id]);
 };

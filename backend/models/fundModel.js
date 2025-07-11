@@ -29,6 +29,11 @@ exports.getFunds = async (filters) => {
     params.push(filters.marked_as_pay_later);
   }
 
+  if (filters.building) {
+    query += ` AND building = ?`;
+    params.push(filters.building);
+  }
+
   query += ` ORDER BY id DESC`;
 
   const [rows] = await db.execute(query, params);
@@ -37,28 +42,32 @@ exports.getFunds = async (filters) => {
 
 exports.checkReceiptExists = async (receipt_no) => {
   const [rows] = await db.execute(
-    `SELECT id FROM fund_records WHERE receipt_no = ?`,
+    `SELECT id FROM fund_records WHERE receipt_no = ? LIMIT 1`,
     [receipt_no]
   );
   return rows.length > 0;
 };
 
 exports.addFund = async (fundData) => {
-  const [result] = await db.execute(
-    `INSERT INTO fund_records (receipt_no, name, mode_of_payment, date, place, amount, year,building, marked_as_pay_later)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [
-      fundData.receipt_no,
-      fundData.name,
-      fundData.mode_of_payment,
-      fundData.date,
-      fundData.place,
-      fundData.amount,
-      fundData.year,
-      fundData.building,
-      fundData.marked_as_pay_later || "paid",
-    ]
-  );
+  const sql = `
+    INSERT INTO fund_records (
+      receipt_no, name, mode_of_payment, date, place, amount, year, building, marked_as_pay_later
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  const values = [
+    fundData.receipt_no,
+    fundData.name,
+    fundData.mode_of_payment,
+    fundData.date,
+    fundData.place,
+    fundData.amount,
+    fundData.year,
+    fundData.building,
+    fundData.marked_as_pay_later || "paid",
+  ];
+
+  const [result] = await db.execute(sql, values);
   return result;
 };
 
@@ -70,7 +79,8 @@ exports.deleteFund = async (id) => {
 };
 
 exports.getAllFunds = async () => {
-  const query = `SELECT * FROM fund_records ORDER BY date DESC`;
-  const [rows] = await db.execute(query);
+  const [rows] = await db.execute(
+    `SELECT * FROM fund_records ORDER BY date DESC`
+  );
   return rows;
 };
