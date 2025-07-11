@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
  // apiBaseUrl: 'https://fund-manager-backend-o6oz.onrender.com/api',
-   apiBaseUrl: 'http://54.84.52.117:5000/api'
+   apiBaseUrl: 'https://54.84.52.117:5000/api'
   // apiBaseUrl: 'http://10.203.94.77:5000/api',
   // apiBaseUrl: 'http://localhost:5000/api',
 };
