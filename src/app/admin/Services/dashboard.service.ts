@@ -12,7 +12,14 @@ export class DashboardService {
 
   constructor(private http: HttpClient) {}
 
-  getdashboardStats(): Observable<ExpensesDashboardStats> {
-    return this.http.get<ExpensesDashboardStats>(`${this.baseUrl}/stats`);
-  }
+  getDashboardStats(): Observable<ExpensesDashboardStats> {
+  const headers = new HttpHeaders({
+    'ngrok-skip-browser-warning': 'asdasd'
+  });
+
+  return this.http.get<ExpensesDashboardStats>(`${this.baseUrl}/stats`, {
+    headers
+  });
+}
+
 }
