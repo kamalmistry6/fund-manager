@@ -1,8 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { fund } from '../../models/funds';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import html2pdf from 'html2pdf.js';
 
 @Component({
@@ -18,6 +16,23 @@ export class ViewReceiptComponent {
     @Inject(MAT_DIALOG_DATA) public data: fund
   ) {
     this.receiptData = data;
+  }
+
+  printReceipt(): void {
+    const printContent = document.getElementById('receipt-wrapper');
+    if (!printContent) {
+      console.error('Receipt content not found for printing.');
+      return;
+    }
+
+    // Hide all content except receipt for print
+    const originalContents = document.body.innerHTML;
+    const receiptHTML = printContent.outerHTML;
+
+    document.body.innerHTML = receiptHTML;
+    window.print();
+    document.body.innerHTML = originalContents;
+    location.reload();
   }
 
   downloadReceipt(): void {
@@ -39,10 +54,8 @@ export class ViewReceiptComponent {
     html2pdf().set(opt).from(element).save();
   }
 
-  numberToWords(num: number): string {
-    if (num === 0) return 'Zero Only';
-
-    const a = [
+  convertNumberToWords(num: number): string {
+    const ones = [
       '',
       'One',
       'Two',
@@ -64,7 +77,7 @@ export class ViewReceiptComponent {
       'Eighteen',
       'Nineteen',
     ];
-    const b = [
+    const tens = [
       '',
       '',
       'Twenty',
@@ -77,36 +90,54 @@ export class ViewReceiptComponent {
       'Ninety',
     ];
 
-    const numberToWordsHelper = (n: number): string => {
-      if (n < 20) return a[n];
-      if (n < 100)
-        return b[Math.floor(n / 10)] + (n % 10 ? ' ' + a[n % 10] : '');
-      if (n < 1000)
-        return (
-          a[Math.floor(n / 100)] +
-          ' Hundred' +
-          (n % 100 ? ' ' + numberToWordsHelper(n % 100) : '')
-        );
-      if (n < 100000)
-        return (
-          numberToWordsHelper(Math.floor(n / 1000)) +
-          ' Thousand' +
-          (n % 1000 ? ' ' + numberToWordsHelper(n % 1000) : '')
-        );
-      if (n < 10000000)
-        return (
-          numberToWordsHelper(Math.floor(n / 100000)) +
-          ' Lakh' +
-          (n % 100000 ? ' ' + numberToWordsHelper(n % 100000) : '')
-        );
-      return (
-        numberToWordsHelper(Math.floor(n / 10000000)) +
-        ' Crore' +
-        (n % 10000000 ? ' ' + numberToWordsHelper(n % 10000000) : '')
-      );
-    };
+    if (num === 0) return 'Zero';
 
-    return numberToWordsHelper(num);
+    if (num < 20) return ones[num];
+
+    if (num < 100)
+      return (
+        tens[Math.floor(num / 10)] + (num % 10 ? ' ' + ones[num % 10] : '')
+      );
+
+    if (num < 1000)
+      return (
+        ones[Math.floor(num / 100)] +
+        ' Hundred' +
+        (num % 100 ? ' ' + this.convertNumberToWords(num % 100) : '')
+      );
+
+    if (num < 100000)
+      return (
+        this.convertNumberToWords(Math.floor(num / 1000)) +
+        ' Thousand' +
+        (num % 1000 ? ' ' + this.convertNumberToWords(num % 1000) : '')
+      );
+
+    if (num < 10000000)
+      return (
+        this.convertNumberToWords(Math.floor(num / 100000)) +
+        ' Lakh' +
+        (num % 100000 ? ' ' + this.convertNumberToWords(num % 100000) : '')
+      );
+
+    return (
+      this.convertNumberToWords(Math.floor(num / 10000000)) +
+      ' Crore' +
+      (num % 10000000 ? ' ' + this.convertNumberToWords(num % 10000000) : '')
+    );
+  }
+
+  convertAmountToWords(amount: number): string {
+    const integerPart = Math.floor(amount);
+    const decimalPart = Math.round((amount - integerPart) * 100);
+
+    let words = this.convertNumberToWords(integerPart) + ' Rupees';
+
+    if (decimalPart > 0) {
+      words += ' and ' + this.convertNumberToWords(decimalPart) + ' Paise';
+    }
+
+    return words + ' Only';
   }
 
   closeDialog(): void {

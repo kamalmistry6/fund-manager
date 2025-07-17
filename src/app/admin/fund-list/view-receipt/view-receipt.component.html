@@ -3,6 +3,8 @@
         View Recepit
     </h3>
     <div style="display: flex;align-items: center;gap: 10px;">
+        <button (click)="printReceipt()">Print Receipt</button>
+
         <button (click)="downloadReceipt()" class="close-btn">
             <mat-icon svgIcon="download-pdf"></mat-icon>
         </button>
@@ -35,7 +37,7 @@
                 <p>श्री./ श्रीमती :</p> <span>{{receiptData.name}}</span>
             </div>
             <P>रा. {{receiptData.building}} आपणांकडून श्री गणेशोत्सवास वर्गणी अक्षरी रूपये
-                {{numberToWords(receiptData.amount)}} मात्र रोख
+                {{convertAmountToWords(receiptData.amount)}} मात्र रोख
                 मिळाले.
                 धन्यवाद !</P>
         </div>

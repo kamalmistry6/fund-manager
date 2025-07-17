@@ -117,7 +117,7 @@ export class FundListComponent implements OnInit {
   openDialog(element: fund): void {
     const dialogRef = this.dialog.open(ViewReceiptComponent, {
       width: '90vw',
-      maxWidth: '600px',
+      maxWidth: '700px',
       maxHeight: '90vh',
       panelClass: 'custom-dialog-container',
       data: element,
