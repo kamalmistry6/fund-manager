@@ -18,22 +18,24 @@ export class ViewReceiptComponent {
     this.receiptData = data;
   }
 
-  printReceipt(): void {
-    const printContent = document.getElementById('receipt-wrapper');
-    if (!printContent) {
-      console.error('Receipt content not found for printing.');
-      return;
-    }
+  // downloadReceipt(): void {
+  //   const element = document.getElementById('receipt-wrapper');
+  //   if (!element) {
+  //     console.error('Receipt content not found.');
+  //     return;
+  //   }
 
-    // Hide all content except receipt for print
-    const originalContents = document.body.innerHTML;
-    const receiptHTML = printContent.outerHTML;
+  //   const opt = {
+  //     margin: [5, 5, 5, 5],
+  //     filename: `Receipt-${this.data.receipt_no}.pdf`,
+  //     image: { type: 'jpeg', quality: 0.98 },
+  //     html2canvas: { scale: 2 },
+  //     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+  //     pagebreak: { mode: ['avoid-all'] },
+  //   };
 
-    document.body.innerHTML = receiptHTML;
-    window.print();
-    document.body.innerHTML = originalContents;
-    location.reload();
-  }
+  //   html2pdf().set(opt).from(element).save();
+  // }
 
   downloadReceipt(): void {
     const element = document.getElementById('receipt-wrapper');
@@ -42,16 +44,67 @@ export class ViewReceiptComponent {
       return;
     }
 
+    const fileName = `Receipt-${this.data.receipt_no}.pdf`;
+
     const opt = {
       margin: [5, 5, 5, 5],
-      filename: `Receipt-${this.data.receipt_no}.pdf`,
+      filename: fileName,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['avoid-all'] },
     };
 
-    html2pdf().set(opt).from(element).save();
+    html2pdf()
+      .set(opt)
+      .from(element)
+      .output('blob')
+      .then((pdfBlob: Blob) => {
+        const blobUrl = URL.createObjectURL(pdfBlob);
+
+        // Download the PDF
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = fileName;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        // Detect device type (mobile/tablet/desktop)
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+        if (!isMobile) {
+          // On desktop/tablet, auto print using iframe
+          const iframe = document.createElement('iframe');
+          iframe.style.display = 'none';
+          iframe.src = blobUrl;
+          document.body.appendChild(iframe);
+
+          iframe.onload = () => {
+            setTimeout(() => {
+              try {
+                iframe.contentWindow?.focus();
+                iframe.contentWindow?.print();
+              } catch (err) {
+                console.error('Print failed:', err);
+                alert('Please open the PDF manually and print it.');
+              }
+            }, 500); // Allow rendering time
+          };
+        } else {
+          // On mobile, suggest manual print
+          alert(
+            'PDF downloaded. Please open it manually to print from your device.'
+          );
+        }
+      })
+      .catch((error: any) => {
+        console.error('Failed to generate/download PDF:', error);
+        alert(
+          'Something went wrong while generating the receipt. Please try again.'
+        );
+      });
   }
 
   convertNumberToWords(num: number): string {
