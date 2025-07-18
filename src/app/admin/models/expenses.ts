@@ -5,6 +5,7 @@ export interface expenses {
   amount: number;
   payment_method: string;
   expense_date: string;
+  bill_photo: string;
   status: string;
 }
 export interface Allotment {

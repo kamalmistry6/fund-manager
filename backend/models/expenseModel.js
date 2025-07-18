@@ -25,7 +25,7 @@ exports.getExpenses = async (filters) => {
     params.push(filters.status);
   }
 
-  query += ` ORDER BY expense_date DESC`;
+  query += ` ORDER BY id DESC`;
 
   const [rows] = await db.execute(query, params);
   return rows;

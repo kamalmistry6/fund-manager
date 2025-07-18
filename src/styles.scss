@@ -182,6 +182,14 @@ td {
 .cdk-overlay-dark-backdrop {
   background: rgba(44, 44, 44, 0.7) !important;
 }
+.custom-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 1.2rem;
+  transition: color 0.3s ease-in-out;
+}
 .delete-button {
   background: none;
   border: none;

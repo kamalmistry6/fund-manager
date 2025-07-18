@@ -78,6 +78,14 @@
                     <th mat-header-cell *matHeaderCellDef>Amount</th>
                     <td mat-cell *matCellDef="let element">₹ {{element.amount}}</td>
                 </ng-container>
+                <ng-container matColumnDef="bill_photo">
+                    <th mat-header-cell *matHeaderCellDef>Bill Photo</th>
+                    <td mat-cell *matCellDef="let element">
+                        <button class="custom-button" (click)="viewBillPhoto(element.bill_photo)">
+                            <mat-icon svgIcon="photo"></mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
 
                 <ng-container matColumnDef="action">
                     <th mat-header-cell *matHeaderCellDef> Actions </th>
@@ -101,4 +109,12 @@
         <mat-paginator [pageSizeOptions]="[10, 20, 30]" [showFirstLastButtons]="false"></mat-paginator>
 
     </div>
+    <!-- Image Preview Modal -->
+    <div class="image-modal-backdrop" *ngIf="previewImageUrl" (click)="closeImagePreview()">
+        <div class="image-modal" (click)="$event.stopPropagation()">
+            <img [src]="previewImageUrl" alt="Bill Image" />
+            <!-- <button class="close-button" (click)="closeImagePreview()">×</button> -->
+        </div>
+    </div>
+
 </div>

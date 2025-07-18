@@ -54,6 +54,10 @@ export class IconService {
       'download-pdf',
       this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/pdf.svg')
     );
+    this.iconRegistry.addSvgIcon(
+      'photo',
+      this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/photo.svg')
+    );
 
     this.iconsRegistered = true;
   }

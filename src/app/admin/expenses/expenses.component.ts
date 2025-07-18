@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { AddExpensesComponent } from './add-expenses/add-expenses.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,6 +7,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { expenses } from '../models/expenses';
 import { ExpensesService } from '../Services/expenses.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-expenses',
@@ -14,7 +15,7 @@ import { ExpensesService } from '../Services/expenses.service';
   templateUrl: './expenses.component.html',
   styleUrl: './expenses.component.scss',
 })
-export class ExpensesComponent {
+export class ExpensesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   expensesFilterForm!: FormGroup;
   statusTypeOptions: string[] = ['Paid', 'Pending'];
@@ -27,10 +28,12 @@ export class ExpensesComponent {
     'payment_method',
     'status',
     'amount',
+    'bill_photo',
     'action',
   ];
   dataSource = new MatTableDataSource<expenses>();
   expensesData: expenses[] = [];
+  previewImageUrl: string | null = null;
 
   constructor(
     private expensesService: ExpensesService,
@@ -62,6 +65,16 @@ export class ExpensesComponent {
   resetFilters() {
     this.expensesFilterForm.reset();
     this.getExpenses();
+  }
+  viewBillPhoto(fileName: string): void {
+    this.previewImageUrl = `${environment.apiBaseUrl.replace(
+      '/api',
+      ''
+    )}/uploads/expenses/${fileName}`;
+  }
+
+  closeImagePreview(): void {
+    this.previewImageUrl = null;
   }
 
   getStatusClass(status: string): string {

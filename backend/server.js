@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const path = require("path");
 
 const fundRoutes = require("./routes/fundRoutes");
 const expenseRoutes = require("./routes/expenseRoutes");
@@ -24,6 +25,7 @@ app.use("/api/stats", statsRoutes);
 app.use("/api/user-expenses", userExpenses);
 app.use("/api/allot", fundAllotRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ✅ Health check ping route — ADD THIS HERE
 app.get("/ping", (req, res) => {
