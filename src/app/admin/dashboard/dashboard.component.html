@@ -8,11 +8,11 @@
             <div class="amount-summary">
                 <div class="amount-item">
                     <span class="label">Total Expenses:</span>
-                    <span class="value">{{ stats?.expensesStats?.totalExpenses }}</span>
+                    <span class="value">{{ stats?.expensesStats?.totalExpenses ?? 0 }}</span>
                 </div>
                 <div class="amount-item">
                     <span class="label">Total Expenses Amount:</span>
-                    <span class="value">{{ stats?.expensesStats?.totalExpensesAmount | currency:'INR'}}</span>
+                    <span class="value">{{ stats?.expensesStats?.totalExpensesAmount ?? 0 | currency:'INR'}}</span>
                 </div>
 
             </div>
@@ -25,15 +25,15 @@
             <div class="amount-summary">
                 <div class="amount-item">
                     <span class="label">Total Amount:</span>
-                    <span class="value">{{ stats?.amountStats?.totalAmount | currency:'INR' }}</span>
+                    <span class="value">{{ stats?.amountStats?.totalAmount ?? 0 | currency:'INR' }}</span>
                 </div>
                 <div class="amount-item">
                     <span class="label">Total Opening Cash:</span>
-                    <span class="value">{{ stats?.amountStats?.openingCash | currency:'INR' }}</span>
+                    <span class="value">{{ stats?.amountStats?.openingCash ?? 0 | currency:'INR' }}</span>
                 </div>
                 <div class="amount-item">
                     <span class="label">Total Opening Bank:</span>
-                    <span class="value">{{ stats?.amountStats?.openingBank| currency:'INR' }}</span>
+                    <span class="value">{{ stats?.amountStats?.openingBank ?? 0 | currency:'INR' }}</span>
                 </div>
             </div>
 
@@ -46,11 +46,11 @@
             <div class="amount-summary">
                 <div class="amount-item">
                     <span class="label">Total Alloted Amount:</span>
-                    <span class="value">{{ stats?.allotStats?.totalAllotAmount | currency:'INR' }}</span>
+                    <span class="value">{{ stats?.allotStats?.totalAllotAmount ?? 0 | currency:'INR' }}</span>
                 </div>
                 <div class="amount-item">
                     <span class="label">Total Amount Expenses:</span>
-                    <span class="value">{{ stats?.allotStats?.totalExpenseAmount | currency:'INR' }}</span>
+                    <span class="value">{{ stats?.allotStats?.totalExpenseAmount ?? 0 | currency:'INR' }}</span>
                 </div>
 
             </div>
