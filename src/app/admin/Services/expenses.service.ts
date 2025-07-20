@@ -13,23 +13,23 @@ export class ExpensesService {
 
   constructor(private http: HttpClient) {}
 
-  getExpenses(filters: any): Observable<expenses[]> {
-    let params = new HttpParams();
+  getExpenses(): Observable<expenses[]> {
+    // let params = new HttpParams();
 
-    if (filters.name) {
-      params = params.set('name', filters.name);
-    }
-    if (filters.payment_method) {
-      params = params.set('payment_method', filters.payment_method);
-    }
-    if (filters.expense_date) {
-      params = params.set('expense_date', filters.expense_date);
-    }
-    if (filters.status) {
-      params = params.set('status', filters.status);
-    }
+    // if (filters.name) {
+    //   params = params.set('name', filters.name);
+    // }
+    // if (filters.payment_method) {
+    //   params = params.set('payment_method', filters.payment_method);
+    // }
+    // if (filters.expense_date) {
+    //   params = params.set('expense_date', filters.expense_date);
+    // }
+    // if (filters.status) {
+    //   params = params.set('status', filters.status);
+    // }
 
-    return this.http.get<expenses[]>(`${this.baseUrl}/expenses`, { params });
+    return this.http.get<expenses[]>(`${this.baseUrl}/expenses`);
   }
 
   addExpense(expensesData: any): Observable<any> {

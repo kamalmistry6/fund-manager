@@ -1,26 +1,19 @@
 export interface ExpensesDashboardStats {
-  paymentModeStats?: PaymentModeStats;
-  statusStats?: StatusStats;
+  expensesStats?: ExpensesStats;
   amountStats?: AmountStats;
-  totalExpenses?: number;
-  totalReceipt?: number;
+  allotStats?: AllotStats;
 }
 
-export interface PaymentModeStats {
-  total: number;
-  online: string;
-  cash: string;
-  cheque: string;
+export interface ExpensesStats {
+  totalExpenses: number;
+  totalExpensesAmount: string;
 }
-
-export interface StatusStats {
-  paid: string;
-  pending: string;
-}
-
 export interface AmountStats {
   totalAmount: string;
-  onlineAmount: string;
-  cashAmount: string;
-  chequeAmount: string;
+  openingBank: string;
+  openingCash: string;
+}
+export interface AllotStats {
+  totalAllotAmount: string;
+  totalExpenseAmount: string;
 }

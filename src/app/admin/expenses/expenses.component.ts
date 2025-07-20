@@ -8,6 +8,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { expenses } from '../models/expenses';
 import { ExpensesService } from '../Services/expenses.service';
 import { environment } from '../../../environments/environment';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-expenses',
@@ -17,9 +19,7 @@ import { environment } from '../../../environments/environment';
 })
 export class ExpensesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  expensesFilterForm!: FormGroup;
-  statusTypeOptions: string[] = ['Paid', 'Pending'];
-  paymentMethodOptions: string[] = ['Cash', 'Card', 'Online'];
+
   displayedColumns: string[] = [
     'sr_no',
     'name',
@@ -31,54 +31,74 @@ export class ExpensesComponent implements OnInit {
     'bill_photo',
     'action',
   ];
+
+  statusTypeOptions: string[] = ['Paid', 'Pending'];
+  paymentMethodOptions: string[] = ['Cash', 'Card', 'Online'];
+
   dataSource = new MatTableDataSource<expenses>();
-  expensesData: expenses[] = [];
-  previewImageUrl: string | null = null;
+  previewImageUrl: SafeUrl | null = null;
+  private imageBaseUrl = `${environment.apiBaseUrl.replace(
+    '/api',
+    ''
+  )}/uploads/expenses/`;
 
   constructor(
     private expensesService: ExpensesService,
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef,
-    private fb: FormBuilder
-  ) {
-    this.initializeFilterForm();
-  }
+    private http: HttpClient,
+    private sanitizer: DomSanitizer
+  ) {}
 
   ngOnInit(): void {
     this.getExpenses();
-
-    this.expensesFilterForm.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe(() => {
-        this.getExpenses();
-      });
   }
 
-  initializeFilterForm(): void {
-    this.expensesFilterForm = this.fb.group({
-      name: [''],
-      expense_date: [''],
-      payment_method: [''],
-      status: [''],
+  getExpenses(): void {
+    this.expensesService.getExpenses().subscribe({
+      next: (data: expenses[]) => {
+        data.forEach((item) => {
+          item['statusClass'] =
+            item.status?.toLowerCase() === 'paid'
+              ? 'status-paid'
+              : 'status-pending';
+        });
+
+        this.dataSource.data = data;
+        this.dataSource.paginator = this.paginator;
+        this.cdr.markForCheck();
+      },
+      error: (error) => {
+        console.error('Error fetching expenses data:', error);
+        alert('Failed to load expenses. Please try again.');
+      },
     });
   }
-  resetFilters() {
-    this.expensesFilterForm.reset();
-    this.getExpenses();
-  }
+
   viewBillPhoto(fileName: string): void {
-    this.previewImageUrl = `${environment.apiBaseUrl.replace(
-      '/api',
-      ''
-    )}/uploads/expenses/${fileName}`;
+    const url = `${this.imageBaseUrl}${fileName}`;
+
+    const headers = new HttpHeaders({
+      'ngrok-skip-browser-warning': 'true',
+    });
+
+    this.http.get(url, { headers, responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        this.previewImageUrl = this.sanitizer.bypassSecurityTrustUrl(
+          URL.createObjectURL(blob)
+        );
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Image load failed:', err);
+        alert('Failed to load image. Try again.');
+      },
+    });
   }
 
   closeImagePreview(): void {
     this.previewImageUrl = null;
-  }
-
-  getStatusClass(status: string): string {
-    return status.toLowerCase() === 'paid' ? 'status-paid' : 'status-pending';
+    this.cdr.markForCheck();
   }
 
   openDialog(): void {
@@ -96,29 +116,11 @@ export class ExpensesComponent implements OnInit {
     });
   }
 
-  getExpenses(): void {
-    const filters = this.expensesFilterForm.value;
-
-    this.expensesService.getExpenses(filters).subscribe(
-      (data: expenses[]) => {
-        this.dataSource = new MatTableDataSource(data);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.data = data;
-        this.expensesData = data;
-        this.cdr.detectChanges();
-      },
-      (error) => {
-        console.error('Error fetching expenses data:', error);
-        alert('Failed to load expenses. Please try again.');
-      }
-    );
-  }
-
   deleteExpense(id: number): void {
     if (confirm('Are you sure you want to delete this expense?')) {
       this.expensesService.deleteExpense(id).subscribe({
         next: () => {
-          this.getExpenses(); // 🔥 Refresh table after deleting
+          this.getExpenses();
           alert('Expense deleted successfully.');
         },
         error: (err) => {

@@ -2,47 +2,43 @@ const db = require("../config/db");
 
 exports.getDashboardStats = async (req, res) => {
   try {
-    // Combined Payment Mode & Status Stats
-    const [summaryStatsRows] = await db.execute(`
-      SELECT 
+    const [expensesStatsRows] = await db.execute(`
+      SELECT
         COUNT(*) as totalExpenses,
-        SUM(payment_method = 'online') as onlinePayments,
-        SUM(payment_method = 'cash') as cashPayments,
-        SUM(payment_method = 'cheque') as chequePayments,
-        SUM(status = 'paid') as paidExpenses,
-        SUM(status = 'pending') as pendingExpenses
+        SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) as totalExpensesAmount
       FROM expense
     `);
 
     // Amount Stats + Total Receipts
     const [fundStatsRows] = await db.execute(`
       SELECT 
-        COUNT(*) as totalReceipts,
         SUM(CASE WHEN marked_as_pay_later = 'paid' THEN amount ELSE 0 END) as totalAmount,
-        SUM(CASE WHEN mode_of_payment = 'online' THEN amount ELSE 0 END) as onlineAmount,
-        SUM(CASE WHEN mode_of_payment = 'cash' THEN amount ELSE 0 END) as cashAmount,
-        SUM(CASE WHEN mode_of_payment = 'cheque' THEN amount ELSE 0 END) as chequeAmount
+        SUM(CASE WHEN mode_of_payment = 'cash' THEN amount ELSE 0 END) as openingCash,
+        SUM(CASE WHEN mode_of_payment IN ('online', 'cheque') THEN amount ELSE 0 END) as openingBank
       FROM fund_records
+    `);
+    const [allotStatsRows] = await db.execute(`
+      SELECT 
+        (SELECT SUM(amount) FROM fund_allotments) AS totalAllottedAmount,
+        (SELECT SUM(amount) FROM user_expenses) AS totalExpenseAmount
     `);
 
     // Final Structured Response
     const stats = {
-      totalExpenses: summaryStatsRows[0].totalExpenses,
-      paymentModeStats: {
-        online: summaryStatsRows[0].onlinePayments,
-        cash: summaryStatsRows[0].cashPayments,
-        cheque: summaryStatsRows[0].chequePayments,
+      expensesStats: {
+        totalExpenses: expensesStatsRows[0].totalExpenses,
+        totalExpensesAmount: expensesStatsRows[0].totalExpensesAmount,
       },
-      statusStats: {
-        paid: summaryStatsRows[0].paidExpenses,
-        pending: summaryStatsRows[0].pendingExpenses,
+
+      allotStats: {
+        totalAllotAmount: allotStatsRows[0].totalAllottedAmount,
+        totalExpenseAmount: allotStatsRows[0].totalExpenseAmount,
       },
-      totalReceipt: fundStatsRows[0].totalReceipts,
+
       amountStats: {
         totalAmount: fundStatsRows[0].totalAmount,
-        onlineAmount: fundStatsRows[0].onlineAmount,
-        cashAmount: fundStatsRows[0].cashAmount,
-        chequeAmount: fundStatsRows[0].chequeAmount,
+        openingCash: fundStatsRows[0].openingCash,
+        openingBank: fundStatsRows[0].openingBank,
       },
     };
 

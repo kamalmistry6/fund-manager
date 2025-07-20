@@ -71,12 +71,12 @@
 
                 <ng-container matColumnDef="status">
                     <th mat-header-cell *matHeaderCellDef>Status</th>
-                    <td mat-cell *matCellDef="let element" [ngClass]="getStatusClass(element.status)">{{element.status}}
+                    <td mat-cell *matCellDef="let element" [ngClass]="element.statusClass">{{element.status}}
                     </td>
                 </ng-container>
                 <ng-container matColumnDef="amount">
                     <th mat-header-cell *matHeaderCellDef>Amount</th>
-                    <td mat-cell *matCellDef="let element">₹ {{element.amount}}</td>
+                    <td mat-cell *matCellDef="let element">{{element.amount | currency:'INR'}}</td>
                 </ng-container>
                 <ng-container matColumnDef="bill_photo">
                     <th mat-header-cell *matHeaderCellDef>Bill Photo</th>
@@ -113,7 +113,6 @@
     <div class="image-modal-backdrop" *ngIf="previewImageUrl" (click)="closeImagePreview()">
         <div class="image-modal" (click)="$event.stopPropagation()">
             <img [src]="previewImageUrl" alt="Bill Image" />
-            <!-- <button class="close-button" (click)="closeImagePreview()">×</button> -->
         </div>
     </div>
 

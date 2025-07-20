@@ -10,11 +10,11 @@ import { ViewReceiptComponent } from './fund-list/view-receipt/view-receipt.comp
 const routes: Routes = [
   { path: '', component: AdminComponent },
   {
-    path: 'Dashboard',
+    path: 'dashboard',
     component: DashboardComponent,
   },
   {
-    path: 'fund-list',
+    path: 'funds',
     component: FundListComponent,
   },
   {
@@ -22,11 +22,11 @@ const routes: Routes = [
     component: ViewReceiptComponent,
   },
   {
-    path: 'fund-expenses',
+    path: 'expenses',
     component: ExpensesComponent,
   },
   {
-    path: 'allot-expenses',
+    path: 'allotments',
     component: AllotExpensesComponent,
   },
 ];

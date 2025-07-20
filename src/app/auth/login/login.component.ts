@@ -40,7 +40,7 @@ export class LoginComponent {
           this.toastService.showToast('Login successful!', 'success');
 
           if (role === 'admin') {
-            this.router.navigate(['/admin/Dashboard']);
+            this.router.navigate(['/admin/dashboard']);
           } else {
             this.router.navigate(['/user/user-expenses']);
           }

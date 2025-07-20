@@ -1,5 +1,3 @@
-.add-fund {
-}
 .div-popup-overlay {
   position: fixed;
   inset: 0;
@@ -28,46 +26,70 @@
     color: #2c3e50;
   }
 }
+.dashboard-container {
+  padding: 1rem;
+  // margin: 0rem 3rem;
+}
 .stats-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  padding: 1rem 2rem;
-  justify-content: space-between;
-  .stats-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    flex: 1 1 calc(25% - 20px);
-    background-color: #fff;
-    min-width: 150px;
-    border: 1.5px solid #d2e1ff;
-    border-radius: 5px;
-    color: #000;
-    cursor: pointer;
-    transition: 0.3s ease-in-out;
-    @media (max-width: 1024px) {
-      flex: 1 1 calc(50% - 20px);
-    }
-    @media (max-width: 600px) {
-      flex: 1 1 80%;
-    }
-    .stats-logo i {
-      color: #a998ff;
-      font-size: 35px;
-    }
-    .stats-txt {
-      font-size: 25px;
-      font-weight: 400;
-      white-space: nowrap;
-      @media (max-width: 600px) {
-        font-size: 25px;
-      }
-    }
-    .stats-value {
-      font-weight: 500;
-    }
+  padding-bottom: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
   }
+  @media (max-width: 500px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .stats-value {
+    font-weight: 500;
+  }
+}
+
+.stats-card {
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #fff;
+  border: 1.5px solid #d2e1ff;
+  border-radius: 5px;
+  color: #000;
+  cursor: pointer;
+  width: 100%;
+}
+.stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0rem 1rem;
+  margin-bottom: 1.2rem;
+}
+.stats-txt {
+  font-size: 28px;
+  font-weight: 400;
+  white-space: nowrap;
+  @media (max-width: 600px) {
+    font-size: 25px;
+  }
+}
+.stats-logo i {
+  color: #a998ff;
+  font-size: 35px;
+}
+.amount-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.amount-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.value {
+  color: #333;
 }

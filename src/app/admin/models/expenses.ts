@@ -7,6 +7,7 @@ export interface expenses {
   expense_date: string;
   bill_photo: string;
   status: string;
+  statusClass?: string;
 }
 export interface Allotment {
   id: number;
