@@ -92,7 +92,7 @@ export class FundListComponent implements OnInit {
     this.fundForm = this.fb.group({
       receipt_no: [''],
       name: ['', Validators.required],
-      building: ['', Validators.required],
+      building: [''],
       mode_of_payment: ['cash', Validators.required],
       year: ['22', Validators.required],
       date: [today, Validators.required],
