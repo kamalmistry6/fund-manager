@@ -99,6 +99,7 @@ export class FundListComponent implements OnInit {
       receipt_no: [''],
       name: ['', Validators.required],
       building: [''],
+      wing: [''],
       mode_of_payment: ['cash', Validators.required],
       year: ['22', Validators.required],
       date: [today, Validators.required],
