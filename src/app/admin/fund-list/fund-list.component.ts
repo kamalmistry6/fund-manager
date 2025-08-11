@@ -29,21 +29,27 @@ export class FundListComponent implements OnInit {
 
   buildingControl = new FormControl('');
   flatTypeOptions: string[] = [
-    'Sneha Apt',
+    'Ashtavinayak Complex',
+    'Mahaganpati Apt',
+    'Shivam Bungalow',
     'Samrat Apt',
-    'Kalpataru Heights',
-    'Kalpataru Residency',
+    'Sneha Apt',
+    'Golden Chariot Apt',
     'Swati Apt',
-    'Devdarshan Apt',
     'Sai Kiran Apt',
-    'Kaladeep Apt',
+    'Aashirwad Apt',
     'Vijaydeep Apt',
+    'Kalladeep Apt',
+    'Devdarshan Apt',
+    'parshwa Apt',
+    'Hempushp Apt',
     'Nilraj Park Apt',
     'Mangaldeep Apt',
     'Srihari Apt',
     'Vrushabh Apt',
-    'Golden Chariot Apt',
-    'Shivam Bungalow',
+    'Kalpataru Heights',
+    'Kalpataru Residency',
+    'Mangaldeep',
   ];
 
   displayedColumns: string[] = [
