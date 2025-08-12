@@ -8,12 +8,8 @@ const routes: Routes = [
     path: '',
     component: LayoutComponent,
     children: [
-      { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
-      {
-        path: 'auth',
-        loadChildren: () =>
-          import('./auth/auth.module').then((m) => m.AuthModule),
-      },
+        { path: '', redirectTo: 'admin/dashboard', pathMatch: 'full' }, // default for logged in users
+      // { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
       {
         path: 'auth',
         loadChildren: () =>
