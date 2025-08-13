@@ -37,6 +37,7 @@ export class FundListComponent implements OnInit {
     'Golden Chariot Apt',
     'Swati Apt',
     'Sai Kiran Apt',
+  'Ashokdeep Apt',
     'Aashirwad Apt',
     'Vijaydeep Apt',
     'Kalladeep Apt',
@@ -50,6 +51,7 @@ export class FundListComponent implements OnInit {
     'Kalpataru Heights',
     'Kalpataru Residency',
     'Mangaldeep',
+    
   ];
 
   displayedColumns: string[] = [
