@@ -217,11 +217,17 @@ export class FundListComponent implements OnInit {
     this.lastReceiptNo = maxReceiptNo;
   }
 
-  generateReceiptNo(): void {
+  // generateReceiptNo(): void {
+  //   this.lastReceiptNo++;
+  //   const formatted = this.lastReceiptNo.toString().padStart(3, '0');
+  //   const newReceipt = `${formatted}/${this.currentYear}`;
+  //   this.fundForm.get('receipt_no')?.setValue(newReceipt);
+  // }
+
+    generateReceiptNo(): void {
     this.lastReceiptNo++;
     const formatted = this.lastReceiptNo.toString().padStart(3, '0');
-    const newReceipt = `${formatted}/${this.currentYear}`;
-    this.fundForm.get('receipt_no')?.setValue(newReceipt);
+    this.fundForm.get('receipt_no')?.setValue(formatted);
   }
 
   onSubmit(): void {
